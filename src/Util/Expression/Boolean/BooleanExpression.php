@@ -1,9 +1,13 @@
 <?php
 
-namespace Commonhelp\Util\Interpreter;
+namespace Commonhelp\Util\Expression\Boolean;
 
-interface Expression{
+use Commonhelp\Util\Expression\BTreeExpression;
+use Commonhelp\Util\Expression\Context;
+
+abstract class BooleanExpression extends BTreeExpression{
 	
-	function interpret();
-	
+	public function interpret(Context $context) {
+		throw new \RuntimeException('Interpreter not available in Boolean Context');
+	}
 }
