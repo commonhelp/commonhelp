@@ -1,6 +1,7 @@
 <?php
 namespace Commonhelp\Ldap;
 
+use Commonhelp\Ldap\Exception\LdapException;
 /**
  * Converter is a collection of useful LDAP related conversion functions.
  *
@@ -134,7 +135,7 @@ class Converter
             } else if ($date instanceof Zend_Date) {
                 $date = new DateTime($date->get(Zend_Date::ISO_8601));
             } else {
-                throw new InvalidArgumentException('Parameter $date is not of the expected type');
+                throw new LdapException('Parameter $date is not of the expected type');
             }
         }
         $timezone = $date->format('O');
@@ -214,7 +215,7 @@ class Converter
                 }
                 try {
                     return self::fromLdapUnserialize($value);
-                } catch (UnexpectedValueException $e) { }
+                } catch (Exception $e) { }
                 break;
         }
         return $value;
@@ -234,11 +235,11 @@ class Converter
     {
         $datepart = array ();
         if (!preg_match('/^(\d{4})/', $date, $datepart) ) {
-            throw new InvalidArgumentException('Invalid date format found');
+            throw new LdapException('Invalid date format found');
         }
 
         if ($datepart[1] < 4) {
-            throw new InvalidArgumentException('Invalid date format found (too short)');
+            throw new LdapException('Invalid date format found (too short)');
         }
 
         $time = array (
@@ -260,7 +261,7 @@ class Converter
         if ($length >= 6) {
             $month = substr($date, 4, 2);
             if ($month < 1 || $month > 12) {
-                throw new InvalidArgumentException('Invalid date format found (invalid month)');
+                throw new LdapException('Invalid date format found (invalid month)');
             }
             $time['month'] = $month;
         }
@@ -269,7 +270,7 @@ class Converter
         if ($length >= 8) {
             $day = substr($date, 6, 2);
             if ($day < 1 || $day > 31) {
-                throw new InvalidArgumentException('Invalid date format found (invalid day)');
+                throw new LdapException('Invalid date format found (invalid day)');
             }
             $time['day'] = $day;
         }
@@ -278,7 +279,7 @@ class Converter
         if ($length >= 10) {
             $hour = substr($date, 8, 2);
             if ($hour < 0 || $hour > 23) {
-                throw new InvalidArgumentException('Invalid date format found (invalid hour)');
+                throw new LdapException('Invalid date format found (invalid hour)');
             }
             $time['hour'] = $hour;
         }
@@ -287,7 +288,7 @@ class Converter
         if ($length >= 12) {
             $minute = substr($date, 10, 2);
             if ($minute < 0 || $minute > 59) {
-                throw new InvalidArgumentException('Invalid date format found (invalid minute)');
+                throw new LdapException('Invalid date format found (invalid minute)');
             }
             $time['minute'] = $minute;
         }
@@ -296,7 +297,7 @@ class Converter
         if ($length >= 14) {
             $second = substr($date, 12, 2);
             if ($second < 0 || $second > 59) {
-                throw new InvalidArgumentException('Invalid date format found (invalid second)');
+                throw new LdapException('Invalid date format found (invalid second)');
             }
             $time['second'] = $second;
         }
@@ -312,14 +313,14 @@ class Converter
                 if (isset($off[2])) {
                     $offsetHours = substr($off[2], 0, 2);
                     if ($offsetHours < 0 || $offsetHours > 12) {
-                        throw new InvalidArgumentException('Invalid date format found (invalid offset hour)');
+                        throw new LdapException('Invalid date format found (invalid offset hour)');
                     }
                     $time['offsethours'] = $offsetHours;
                 }
                 if (isset($off[3])) {
                     $offsetMinutes = substr($off[3], 0, 2);
                     if ($offsetMinutes < 0 || $offsetMinutes > 59) {
-                        throw new InvalidArgumentException('Invalid date format found (invalid offset minute)');
+                        throw new LdapException('Invalid date format found (invalid offset minute)');
                     }
                     $time['offsetminutes'] = $offsetMinutes;
                 }
@@ -360,7 +361,7 @@ class Converter
         } else if ( 'FALSE' === $value ) {
             return false;
         } else {
-            throw new InvalidArgumentException('The given value is not a boolean value');
+            throw new LdapException('The given value is not a boolean value');
         }
     }
 
@@ -375,7 +376,7 @@ class Converter
     {
         $v = @unserialize($value);
         if (false===$v && $value != 'b:0;') {
-            throw new UnexpectedValueException('The given value could not be unserialized');
+            throw new LdapException('The given value could not be unserialized');
         }
         return $v;
     }

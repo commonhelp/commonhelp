@@ -3,6 +3,7 @@
 namespace Commonhelp\Util\Expression\Boolean;
 
 use Commonhelp\Util\Expression\Context;
+use Commonhelp\Util\Expression\Expression;
 
 abstract class BooleanContext extends Context{
 	
@@ -23,9 +24,14 @@ abstract class BooleanContext extends Context{
 			return;
 		}
 		$inorder .= $this->parenthesize($e, "(");
-		$this->inOrderBT($e->getLeft(), $inorder);
-		$inorder .= " {$e->stringfy($this)} ";
-		$this->inOrderBT($e->getRight(), $inorder);
+		if(!($e instanceof NotExpression)){
+			$this->inOrderBT($e->getLeft(), $inorder);
+			$inorder .= " {$e->stringfy($this)} ";
+			$this->inOrderBT($e->getRight(), $inorder);
+		}else{
+			$inorder .= " {$e->stringfy($this)} ";
+			$this->inOrderBT($e->getLeft(), $inorder);
+		}
 		$inorder .= $this->parenthesize($e, ")");
 	}
 	
@@ -36,7 +42,9 @@ abstract class BooleanContext extends Context{
 		$preorder .= $this->parenthesize($e, "(");
 		$preorder .= " {$e->stringfy($this)} ";
 		$this->preOrderBT($e->getLeft(), $preorder);
-		$this->preOrderBT($e->getRight(), $preorder);
+		if(!($e instanceof NotExpression)){
+			$this->preOrderBT($e->getRight(), $preorder);
+		}
 		$preorder .= $this->parenthesize($e, ")");
 	}
 	
@@ -46,7 +54,9 @@ abstract class BooleanContext extends Context{
 		}
 		$postorder .= $this->parenthesize($e, "(");
 		$this->postOrderBT($e->getLeft(), $postorder);
-		$this->postOrderBT($e->getRight(), $postorder);
+		if(!($e instanceof NotExpression)){
+			$this->postOrderBT($e->getRight(), $postorder);
+		}
 		$postorder .= " {$e->stringfy($this)} ";
 		$postorder .= $this->parenthesize($e, ")");
 	}
@@ -69,14 +79,20 @@ abstract class BooleanContext extends Context{
 	
 	protected function parenthesize($e, $strP){
 		if($this->precedence){
-			if($e->getLeft() !== null && $e->getRight() !== null){
-				return $strP;
+			if(!($e instanceof NotExpression)){
+				if($e->getLeft() !== null && $e->getRight() !== null){
+					return $strP;
+				}
+			}else{
+				if($e->getLeft() !== null){
+					return $strP;
+				}
 			}
 		}
 		
 		return null;
 	}
 	
-	abstract function setSymbolByMap($map, BooleanExpression $e);
+	abstract function setSymbolByMap($map, Expression $e);
 	
 }

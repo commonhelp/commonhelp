@@ -4,6 +4,11 @@ namespace Commonhelp\Orm;
 
 class PdoDataLayer implements DataLayerInterface{
 	
+	protected $pdo;
+	
+	public function __construct(){
+		
+	}
 	
 	public function create(){
 		

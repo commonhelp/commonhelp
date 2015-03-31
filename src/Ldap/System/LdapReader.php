@@ -3,6 +3,7 @@ namespace Commonhelp\Ldap;
 
 use Commonhelp\Resource\SubSystem;
 use Commonhelp\Resource\Session;
+use Commonhelp\Ldap\Exception\LdapException;
 
 class LdapReader extends SubSystem{
 	
@@ -31,7 +32,7 @@ class LdapReader extends SubSystem{
 		if($this->sort !== null && is_string($this->sort)){
 			$read = $this->sort($read);
 		}
-		return ldap_get_entries($this->getResource(), $read);
+		return new ResultSet($this, $read);
 	}
 	
 	public function llist($dn, $filter){
@@ -42,18 +43,21 @@ class LdapReader extends SubSystem{
 		if($this->sort !== null && is_string($this->sort)){
 			$list = $this->sort($list);
 		}
-		return ldap_get_entries($this->getResource(), $list);
+		return new ResultSet($this, $list);
 	}
 	
-	public function search($dn, $filter){
+	public function search($dn, $filter, $sort=null){
 		$dnStr = $this->checkDn($dn);
 		if(false === ($search = @ldap_search($this->getResource(), $dnStr, $filter, $this->attributes, $this->attrsOnly, $this->limit))){
-			throw new \RuntimeException('errno:'.ldap_errno($this->getResource()).' error:'.ldap_error($this->getResource()));
+			throw new LdapException('errno:'.ldap_errno($this->getResource()).' error:'.ldap_error($this->getResource()));
 		}
 		if($this->sort !== null && is_string($this->sort)){
 			$search = $this->sort($search);
 		}
-		return ldap_get_entries($this->getResource(), $search);
+		if($sort !== null && is_string($sort)){
+			$search = $this->sort($search, $sort);
+		}
+		return new ResultSet($this, $search);
 	}
 	
 	public function sort($rs, $sort=null){
@@ -61,7 +65,7 @@ class LdapReader extends SubSystem{
 			$sort = $this->sort;
 		}
 		if(!@ldap_sort($this->getResource(), $rs, $sort)){
-			throw new \RuntimeException(ldap_error($this->getResource()));
+			throw new LdapException(ldap_error($this->getResource()));
 		}
 		
 		return $rs;

@@ -37,7 +37,7 @@ class BooleanGenericContext extends BooleanContext{
 		$this->symbol = $symbol;
 	}
 	
-	public function setSymbolByMap($map, BooleanExpression $e){
+	public function setSymbolByMap($map, Expression $e){
 		if(!in_array($map, $this->dictionaryMap)){
 			throw new \RuntimeException("Map symbol {$symbol} not correspondig to a real symbol");
 		}

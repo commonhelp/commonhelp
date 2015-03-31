@@ -4,6 +4,7 @@ namespace Commonhelp\Ldap;
 
 use Commonhelp\Resource\AbstractResource;
 use Commonhelp\Resource\Session;
+use Commonhelp\Ldap\Exception\LdapException;
 
 class LdapSession extends AbstractResource implements Session{
 	
@@ -20,7 +21,7 @@ class LdapSession extends AbstractResource implements Session{
 	
 	public function __construct($options = array()){
 		if(!extension_loaded('ldap')){
-			throw new \RuntimeException('LDAP extension not loaded');
+			throw new LdapException('LDAP extension not loaded');
 		}
 		$this->setOptions($options);
 		$username = isset($options['username']) ? $options['username'] : null;
@@ -31,7 +32,7 @@ class LdapSession extends AbstractResource implements Session{
 	protected function createResource(){
 		$resource = ($this->useUri) ? $this->connect(array($this->connectString)) : $this->connect(array($this->host, $this->port));
 		if (!is_resource($resource)) {
-			throw new \RuntimeException('Unable to connect on: '.$this->connectString);
+			throw new LdapException('Unable to connect on: '.$this->connectString);
 		}
 		$this->resource = $resource;
 		if (ldap_set_option($resource, LDAP_OPT_PROTOCOL_VERSION, 3)){
@@ -74,9 +75,50 @@ class LdapSession extends AbstractResource implements Session{
 		return $this->baseDn;
 	}
 	
+	public function getLastErrorCode(){
+		$ret = @ldap_get_option($this->resource, LDAP_OPT_ERROR_NUMBER, $err);
+		if ($ret === true) {
+			if ($err <= -1 && $err >= -17) {
+				$err = LdapException::LDAP_SERVER_DOWN + (-$err - 1);
+			}
+			return $err;
+		}
+		return 0;
+	}
+	
+	public function getLastError(&$errorCode = null, array &$errorMessages = null){
+		$errorCode     = $this->getLastErrorCode();
+		$errorMessages = array();
+		/* The various error retrieval functions can return
+		 * different things so we just try to collect what we
+		 * can and eliminate dupes.
+		*/
+		$estr1 = @ldap_error($this->resource);
+		if ($errorCode !== 0 && $estr1 === 'Success') {
+			$estr1 = @ldap_err2str($errorCode);
+		}
+		if (!empty($estr1)) {
+			$errorMessages[] = $estr1;
+		}
+		@ldap_get_option($this->resource, LDAP_OPT_ERROR_STRING, $estr2);
+		if (!empty($estr2) && !in_array($estr2, $errorMessages)) {
+			$errorMessages[] = $estr2;
+		}
+		$message = '';
+		if ($errorCode > 0) {
+			$message = '0x' . dechex($errorCode) . ' ';
+		}
+		if (count($errorMessages) > 0) {
+			$message .= '(' . implode('; ', $errorMessages) . ')';
+		} else {
+			$message .= '(no error message from LDAP)';
+		}
+		return $message;
+	}
+	
 	protected function auth(){
 		if(false === parent::auth()){
-			throw new \RuntimeException(ldap_error($this->resource));
+			throw new LdapException(ldap_error($this->resource));
 		}
 	}
 	

@@ -1,38 +1,44 @@
 <?php
 
 namespace Commonhelp\Ldap;
+use Commonhelp\Util\Expression\Boolean\BooleanContext;
+use Commonhelp\Ldap\Filters\FilterExpression;
+use Commonhelp\Util\Expression\Expression;
+use Commonhelp\Util\Expression\Boolean\NonTerminalExpression;
+use Commonhelp\Ldap\Exception\LdapException;
 
-class Filter{
+class Filter extends BooleanContext{
 	
+	protected $dictonary = array('&', '|', '!');
 	
-	public function toString(){
-		
+	public function parse(Expression $exprRoot){
+		$this->parsed = '';
+		$this->preOrderBT($exprRoot, $this->parsed);
+		$this->parsed = preg_replace('/\s+/', '',  $this->parsed);
+		return $this->parsed;
 	}
 	
-	
-	public function __toString() {
-		return $this->toString();
+	public function toString($e){
+		if($e instanceof FilterExpression){
+			return "({$e->getValue()})";
+		}else if($e instanceof NonTerminalExpression){
+			return $this->getSymbol();
+		}
 	}
 	
-	public static function escapeValue($values = array()){
-        if (!is_array($values)) $values = array($values);
-        foreach ($values as $key => $val) {
-            // Escaping of filter meta characters
-            $val = str_replace(array('\\', '*', '(', ')'), array('\5c', '\2a', '\28', '\29'), $val);
-            // ASCII < 32 escaping
-            $val = Converter::ascToHex32($val);
-            if (null === $val) $val = '\0';  // apply escaped "null" if string is empty
-            $values[$key] = $val;
-        }
-        return (count($values) == 1) ? $values[0] : $values;
-    }
+	public function setSymbol($symbol){
+		if(!in_array($symbol, $this->dictonary)){
+			throw new LdapException("Symbol {$symbol} not valid");
+		}
 	
-	public static function unescapeValue($values = array()){
-        if (!is_array($values)) $values = array($values);
-        foreach ($values as $key => $value) {
-            // Translate hex code into ascii
-            $values[$key] = Converter::hex32ToAsc($value);
-        }
-        return (count($values) == 1) ? $values[0] : $values;
-    }
+		$this->symbol = $symbol;
+	}
+	
+	public function setSymbolByMap($map, Expression $e){
+		if(!in_array($map, $this->dictionaryMap)){
+			throw new LdapException("Map symbol {$symbol} not correspondig to a real symbol");
+		}
+		$key = array_search($map, $this->dictionaryMap);
+		$this->symbol = $this->dictonary[$key];
+	}
 }

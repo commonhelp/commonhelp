@@ -2,6 +2,7 @@
 
 namespace Commonhelp\Ldap;
 
+use Commonhelp\Ldap\Exception\LdapException;
 class Dn implements \ArrayAccess{
 	
 	protected $dn;
@@ -13,7 +14,7 @@ class Dn implements \ArrayAccess{
 			return static::fromString($dn);
 		}
 		
-		throw new \RuntimeException('Invalid argument for $dn');
+		throw new LdapException('Invalid argument for $dn');
 	}
 	
 	public static function fromString($dn){
@@ -45,7 +46,7 @@ class Dn implements \ArrayAccess{
 	
 	public function getParentDn($levelup = 1){
 		if($levelup < 1 || $levelup >= count($this->dn)){
-			throw new \RuntimeException('Cannot reterive parent DN with given $levelup');
+			throw new LdapException('Cannot reterive parent DN with given $levelup');
 		}
 		$newDn = array_slice($this->dn, $levelup);
 		return new static($newDn);
@@ -125,21 +126,21 @@ class Dn implements \ArrayAccess{
 	
 	protected function assertIndex($index){
 		if(!is_int($index)){
-			throw new \RuntimeException('Parameter $index must be an integer');
+			throw new LdapException('Parameter $index must be an integer');
 		}
 		if($index < 0 || $index >= count($this->dn)){
-			throw new \RuntimeException('Parameter $index out of bounds');
+			throw new LdapException('Parameter $index out of bounds');
 		}
 	}
 	
 	protected static function assertRdn(array $value){
 		if(count($value) < 1){
-			throw new \RuntimeException('RDN array is malformed: it must have at least one item');
+			throw new LdapException('RDN array is malformed: it must have at least one item');
 		}
 		
 		foreach(array_keys($value) as $key){
 			if(!is_string($key)){
-				throw new \RuntimeException('RDN array is malformed: it must use string keys');
+				throw new LdapException('RDN array is malformed: it must use string keys');
 			}
 		}
 	}
@@ -272,7 +273,7 @@ class Dn implements \ArrayAccess{
         $k = array();
         $v = array();
         if (!self::checkDn($dn, $k, $v)) {
-            throw new \RuntimeException('DN is malformed');
+            throw new LdapException('DN is malformed');
         }
         $ret = array();
         for ($i = 0, $count = count($k); $i < $count; $i++) {
