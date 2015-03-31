@@ -2,7 +2,7 @@
 
 namespace Commonhelp\Util\Collections;
 
-
+use Closure;
 interface Selectable
 {
     /**

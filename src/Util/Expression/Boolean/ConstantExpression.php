@@ -1,7 +1,7 @@
 <?php
 
 namespace Commonhelp\Util\Expression\Boolean;
-use Commonhelp\Util\Expression\Context;
+use Commonhelp\Util\Expression\Visitor;
 
 class ConstantExpression extends TerminalExpression{
 	
@@ -17,8 +17,8 @@ class ConstantExpression extends TerminalExpression{
 		
 	}
 	
-	public function stringfy(Context $context){
-		return $context->toString($this);
+	public function accept(Visitor $visitor){
+		return $visitor->visit($this);
 	}
 	
 }

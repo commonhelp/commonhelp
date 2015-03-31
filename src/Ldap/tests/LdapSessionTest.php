@@ -20,7 +20,7 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 	protected $validDn = 'cn=admin,dc=unponteper,dc=it';
 	protected $invalidDn = 'cn=admin,dc=unponteper,dc';
 	
-	public function testConnection(){
+	/*public function testConnection(){
 		$session = new LdapSession($this->options);
 		$res = $session->getResource();
 		
@@ -51,7 +51,7 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 			)
 		);
 		
-		$filterStr = $filter->parse($expression);
+		$filterStr = $filter->visit($expression);
 		$rs = $reader->search($session->getBaseDn(), '(&(|(objectClass=sambaAccount)(objectClass=sambaSamAccount))(objectClass=posixAccount)(!(uid=*$)))');
 		foreach($rs as $result){
 			print_r($result);
@@ -68,9 +68,9 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 			new FilterExpression('objectClass=user')
 		);
 		
-		$parsed = $filter->parse($expression);
+		$parsed = $filter->visit($expression);
 		$this->assertEquals($expected, $parsed);
-	}
+	}*/
 	
 	public function testFilter(){
 		$expected = "(&(|(objectClass=inetOrgPerson)(objectClass=user))(userCertificate=*))";
@@ -84,7 +84,7 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 				new FilterExpression('userCertificate=*')
 		);
 		
-		$parsed = $filter->parse($expression);
+		$parsed = $filter->visit($expression);
 		$this->assertEquals($expected, $parsed);
 	}
 	
@@ -99,7 +99,7 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 			)
 		);
 		
-		$parsed = $filter->parse($expression);
+		$parsed = $filter->visit($expression);
 		$this->assertEquals($expected, $parsed);
 	}
 	

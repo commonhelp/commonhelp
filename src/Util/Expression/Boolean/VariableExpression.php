@@ -3,7 +3,7 @@
 namespace Commonhelp\Util\Expression\Boolean;
 use Commonhelp\Util\Expression\Operator\OperatorExpression;
 use Commonhelp\Util\Expression\Operator\OperatorContext;
-use Commonhelp\Util\Expression\Context;
+use Commonhelp\Util\Expression\Visitor;
 
 class VariableExpression extends TerminalExpression{
 	
@@ -14,8 +14,8 @@ class VariableExpression extends TerminalExpression{
 		$this->right = null;
 	}
 	
-	public function stringfy(Context $context){
-		return $context->toString($this);
+	public function accept(Visitor $visitor){
+		return $visitor->visit($this);
 	}
 	
 }

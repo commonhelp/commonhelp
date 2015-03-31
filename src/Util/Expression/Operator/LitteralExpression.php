@@ -1,18 +1,17 @@
 <?php
 
 namespace Commonhelp\Util\Expression\Operator;
-use Commonhelp\Util\Expression\Context;
+use Commonhelp\Util\Expression\Visitor;
 
 class LitteralExpression extends OperatorExpression{
 	
-	protected $litteral;
-	
+
 	public function __construct($litteral){
-		$this->litteral = $litteral;
+		$this->value = $litteral;
 	}
 	
-	public function stringfy(Context $context){
-		return $this->litteral;
+	public function accept(Visitor $visitor){
+		return $visitor->visit($this);
 	}
 	
 }

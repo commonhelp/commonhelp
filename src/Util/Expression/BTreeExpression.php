@@ -7,8 +7,7 @@ abstract class BTreeExpression implements Expression{
 	
 	protected $value;
 	
-	abstract function interpret(Context $context);
-	abstract function stringfy(Context $context);
+	abstract function accept(Visitor $visitor);
 	
 	public function getLeft(){
 		return $this->left;

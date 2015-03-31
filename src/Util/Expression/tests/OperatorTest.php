@@ -1,27 +1,28 @@
 <?php
 namespace Commonhelp\Util\Expression;
 
+
+use Commonhelp\Util\Expression\Context\BooleanGenericVisitor;
+use Commonhelp\Util\Expression\Context\BooleanOperatorVisitor;
 use Commonhelp\Util\Expression\Operator\SymbolExpression;
 use Commonhelp\Util\Expression\Operator\LitteralExpression;
-use Commonhelp\Util\Expression\Context\BooleanOperatorContext;
-use Commonhelp\Util\Expression\Context\BooleanGenericContext;
 
 class OperatorTest extends \PHPUnit_Framework_TestCase{
 	
 	public function testBooleanOperatorExpression(){
-		$context = new BooleanOperatorContext();
+		$visitor = new BooleanOperatorVisitor(false);
 		$expression = new SymbolExpression(
 				new LitteralExpression('x'),
-				new LitteralExpression('2')
+				new LitteralExpression('2'),
+				'<='
 		);
 		
-		$context->setSymbol('<=');
 		
-		$this->assertEquals('x <= 2', $expression->stringfy($context));
+		$this->assertEquals('x <= 2', $visitor->visit($expression));
 	}
 	
 	public function testBooleanExpression(){
-		$context = new BooleanGenericContext();
+		$visitor = new BooleanGenericVisitor();
 		$three = new Boolean\ConstantExpression('true');
 		$seven = new Boolean\ConstantExpression('false');
 		$eighteen = new Boolean\ConstantExpression('true');
@@ -37,7 +38,7 @@ class OperatorTest extends \PHPUnit_Framework_TestCase{
 				)	
 			)
 		);
-		$parsed = $context->parse($expression);
+		$parsed = $visitor->visit($expression);
 		$this->assertEquals('(( true  &&  false ) || ( true  && ( false  ||  true )))', $parsed);
 		
 	}

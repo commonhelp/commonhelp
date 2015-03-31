@@ -1,21 +1,19 @@
 <?php
 
 namespace Commonhelp\Util\Expression\Operator;
-use Commonhelp\Util\Expression\Context;
+use Commonhelp\Util\Expression\Visitor;
 
 class SymbolExpression extends OperatorExpression{
 	
-	protected $leftLitteral;
-	protected $rightLitteral;
 	
-	public function __construct(LitteralExpression $left, LitteralExpression $right){
-		$this->leftLitteral = $left;
-		$this->rightLitteral = $right;
+	public function __construct(LitteralExpression $left, LitteralExpression $right, $symbol){
+		$this->left = $left;
+		$this->right = $right;
+		$this->value = $symbol;
 	}
 	
-	public function stringfy(Context $context) {
-		$expression = $this->leftLitteral->stringfy($context).' '.$context->getSymbol().' '.$this->rightLitteral->stringfy($context);
-		return $expression;
+	public function accept(Visitor $visitor) {
+		return $visitor->visit($this);
 	}
 	
 }
