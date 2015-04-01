@@ -67,6 +67,26 @@ class SelectManager extends AstManager{
 		
 		return $this;
 	}
+	
+	public function having($expression){
+		$this->ast['having'] = new HavingNode($expression);
+		
+		return $this;
+	}
+	
+	public function where($expression){
+		$this->ast['where'] = new WhereNode($expression);
+		
+		return $this;
+	}
+	
+	public function join($relation, $class){
+		
+	}
+	
+	public function on($expression){
+		
+	}
 
 
 	

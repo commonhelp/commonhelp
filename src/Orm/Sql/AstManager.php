@@ -15,6 +15,14 @@ abstract class AstManager{
 		return $this->visitor->visit($this->ast);
 	}
 	
+	public function getAst(){
+		return $this->ast;
+	}
+	
+	public function getVisitor(){
+		return $this->visitor;
+	}
+	
 	public function __toString(){
 		return $this->toString();
 	}
