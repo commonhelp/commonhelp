@@ -12,7 +12,7 @@ class SqlBooleanVisitor extends BooleanVisitor{
 	protected $dictonary = array('AND', 'OR', 'NOT');
 	
 	public function __construct(){
-		parent::__construct(false);
+		parent::__construct();
 	}
 	
 	

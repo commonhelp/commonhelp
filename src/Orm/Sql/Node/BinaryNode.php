@@ -8,8 +8,8 @@ class BinaryNode extends Node{
 	protected $right;
 	
 	public function __construct(LitteralNode $left, LitteralNode $right) {
-		$this->expressions['left'] = $this->left = $left;
-		$this->expressions['right'] = $this->right = $right;
+		$this->offsetSet('left', $left);
+		$this->offsetSet('right', $right);
 	}
 	
 }

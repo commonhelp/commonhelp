@@ -6,10 +6,10 @@
         </testsuite>-->
 		<!--<testsuite name="Ldap Test">
             <directory>src/Ldap/tests</directory>
-        </testsuite>
+        </testsuite>-->
 		<testsuite name="Expression test">
             <directory>src/Util/Expression/tests</directory>
-        </testsuite>-->
+        </testsuite>
 		<testsuite name="Orm test">
             <directory>src/Orm/tests</directory>
         </testsuite>

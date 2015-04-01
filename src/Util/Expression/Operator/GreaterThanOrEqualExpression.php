@@ -5,16 +5,11 @@ use Commonhelp\Util\Expression\Visitor;
 use Commonhelp\Util\Expression\Expression;
 use Commonhelp\Util\Expression\BinaryExpression;
 
-class GreaterThanEqualExpression extends OperatorExpression implements BinaryExpression{
+class GreaterThanEqualExpression extends SymbolExpression implements BinaryExpression{
 	
 	
 	public function __construct(Expression $left, Expression $right){
-		$this->left = $left;
-		$this->right = $right;
-	}
-	
-	public function accept(Visitor $visitor) {
-		return $visitor->visit($this);
+		parent::__construct($left, $right, OperatorVisitor::GREATERTHANEQUAL);
 	}
 	
 }

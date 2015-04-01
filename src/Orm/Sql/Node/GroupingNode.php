@@ -20,8 +20,7 @@ class GroupingNode extends Node{
 		if($expression instanceof BooleanExpression){
 			$visitor = new SqlBooleanVisitor();
 		}
-		//$this->value = $visitor->visit($expression);
-		$this->value = $expression;
+		$this->value = $visitor->visit($expression);
 	}
 	
 }

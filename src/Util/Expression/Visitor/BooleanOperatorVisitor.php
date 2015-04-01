@@ -13,10 +13,10 @@ class BooleanOperatorVisitor extends OperatorVisitor{
 	
 	public function process(Expression $e){
 		if($e instanceof SymbolExpression){
-			if(!in_array($e->getValue(), $this->dictionary)){
+			if(!array_key_exists($e->getValue(), $this->dictionary)){
 				throw new \RuntimeException("No match symbol");
 			}
-			return $e->getValue();
+			return $this->dictionary[$e->getValue()];
 		}else if($e instanceof LitteralExpression){
 			return $e->getValue();
 		}

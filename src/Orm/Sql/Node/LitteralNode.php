@@ -54,7 +54,7 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions{
 		if(!($other instanceof LitteralNode)){
 			$other = new LitteralNode($other);
 		}
-		return new NotEqualExpression($this, $other);
+		return new GroupingNode(new NotEqualExpression($this, $other));
 	}
 	
 	public function not_eq_any(array $others){
@@ -154,7 +154,7 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions{
 		if(!($other instanceof LitteralNode)){
 			$other = new LitteralNode($other);
 		}
-		return new GreaterThanEqualExpression($this, $other);
+		return new GroupingNode(new GreaterThanEqualExpression($this, $other));
 	}
 	
 	public function gteq_any(array $others){
@@ -169,7 +169,7 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions{
 		if(!($other instanceof LitteralNode)){
 			$other = new LitteralNode($other);
 		}
-		return new GreaterThanExpression($this, $other);
+		return new GroupingNode(new GreaterThanExpression($this, $other));
 	}
 	
 	public function gt_any(array $others){
@@ -184,7 +184,7 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions{
 		if(!($other instanceof LitteralNode)){
 			$other = new LitteralNode($other);
 		}
-		return new LessThanEqualExpression($this, $other);
+		return new GroupingNode(new LessThanEqualExpression($this, $other));
 	}
 	
 	public function lteq_any(array $others){

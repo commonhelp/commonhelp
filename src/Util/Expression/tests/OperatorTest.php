@@ -14,11 +14,11 @@ class OperatorTest extends \PHPUnit_Framework_TestCase{
 		$expression = new SymbolExpression(
 				new LitteralExpression('x'),
 				new LitteralExpression('2'),
-				'<='
+				Operator\OperatorVisitor::LESSTHANEQUAL
 		);
 		
 		
-		$this->assertEquals('x <= 2', $visitor->visit($expression));
+		$this->assertEquals('x  <=  2', $visitor->visit($expression));
 	}
 	
 	public function testBooleanExpression(){

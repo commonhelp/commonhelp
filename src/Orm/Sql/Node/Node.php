@@ -28,7 +28,23 @@ class Node extends ASTreeExpression{
 	}
 	
 	public function accept(Visitor $visitor){
+		return $visitor->visit($this);
+	}
+	
+	public function getLeft(){
+		if($this->offsetExists('left')){
+			return $this->offsetGet('left');
+		}
 		
+		return null;
+	}
+	
+	public function getRight(){
+		if($this->offsetExists('right')){
+			return $this->offsetGet('right');
+		}
+		
+		return null;
 	}
 	
 	

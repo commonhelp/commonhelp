@@ -5,16 +5,10 @@ use Commonhelp\Util\Expression\Visitor;
 use Commonhelp\Util\Expression\Expression;
 use Commonhelp\Util\Expression\BinaryExpression;
 
-class EqualExpression extends OperatorExpression implements BinaryExpression{
+class EqualExpression extends SymbolExpression implements BinaryExpression{
 	
 	
 	public function __construct(Expression $left, Expression $right){
-		$this->left = $left;
-		$this->right = $right;
+		parent::__construct($left, $right, OperatorVisitor::EQUAL);
 	}
-	
-	public function accept(Visitor $visitor) {
-		return $visitor->visit($this);
-	}
-	
 }

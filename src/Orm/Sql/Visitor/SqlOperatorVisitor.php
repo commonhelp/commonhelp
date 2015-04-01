@@ -3,10 +3,10 @@
 namespace Commonhelp\Orm\Sql;
 use Commonhelp\Util\Expression\Operator\OperatorVisitor;
 use Commonhelp\Util\Expression\Expression;
+use Commonhelp\Orm\Exception\SqlException;
 use Commonhelp\Util\Expression\Operator\SymbolExpression;
-use Commonhelp\Util\Expression\Operator\LitteralExpression;
 
-class SqlOperatorVisitor extends Visitor{
+class SqlOperatorVisitor extends OperatorVisitor{
 	
 	protected $dictionary = array('=', '<', '<=', '>', '>=', '<>');
 	
@@ -14,17 +14,13 @@ class SqlOperatorVisitor extends Visitor{
 		parent::__construct(false);
 	}
 	
-	public function visit(Expression $e){
-		print get_class($e).PHP_EOL;
-	}
-	
 	public function process(Expression $e){
 		if($e instanceof SymbolExpression){
-			if(!in_array($e->getValue(), $this->dictionary)){
-				throw new \RuntimeException("No match symbol");
+			if(!array_key_exists($e->getValue(), $this->dictionary)){
+				throw new SqlException("No match symbol in sql dictionary");
 			}
-			return $e->getValue();
-		}else if($e instanceof LitteralExpression){
+			return $this->dictionary[$e->getValue()];
+		}else if($e instanceof LitteralNode){
 			return $e->getValue();
 		}
 	}
