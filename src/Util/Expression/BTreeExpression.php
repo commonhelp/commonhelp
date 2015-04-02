@@ -1,5 +1,8 @@
 <?php
 namespace Commonhelp\Util\Expression;
+use Commonhelp\Util\Expression\Boolean\OrExpression;
+use Commonhelp\Util\Expression\Boolean\AndExpression;
+use Commonhelp\Util\Expression\Boolean\NotExpression;
 
 abstract class BTreeExpression implements Expression{
 	protected $left;
@@ -24,5 +27,22 @@ abstract class BTreeExpression implements Expression{
 	public function setValue($value){
 		$this->value = $value;
 	}
+	
+	public function otherwise(Expression $right){
+		return new OrExpression($this, $right);
+	}
+	
+	public function also(Expression $right){
+		return new AndExpression($this, $right);
+	}
+	
+	public function negate(){
+		return new NotExpression($this);
+	}
+	
+	public function __toString() { 
+		$class = explode('\\', get_class($this)); 
+		return end($class); 
+	} 
 }
 

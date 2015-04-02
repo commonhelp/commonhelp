@@ -8,14 +8,13 @@ class SelectManager extends AstManager{
 	public function __construct($table = null){
 		parent::__construct();
 		$this->ast = new SelectNode();
-		
 		if(null !== $table){
 			$this->from($table);
 		}
 	}
 	
 	public function project(){
-		$this->ast['projections'] = new Node();
+		$this->ast['projections'] = new ProjectNode();
 		$projections = func_get_args();
 		foreach($projections as $projection){
 			if($projection instanceof LitteralNode){
@@ -75,7 +74,7 @@ class SelectManager extends AstManager{
 	}
 	
 	public function where($expression){
-		$this->ast['where'] = new WhereNode($expression);
+		$this->ast['wheres'] = new WhereNode($expression);
 		
 		return $this;
 	}

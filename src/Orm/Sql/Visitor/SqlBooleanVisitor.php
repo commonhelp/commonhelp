@@ -17,6 +17,7 @@ class SqlBooleanVisitor extends BooleanVisitor{
 	
 	
 	public function process(Expression $e){
+		print get_class($e).PHP_EOL;
 		if($e instanceof NonTerminalExpression){
 			if(!in_array($e->getValue(), $this->dictionaryMap)){
 				throw new \RuntimeException("No match symbol");

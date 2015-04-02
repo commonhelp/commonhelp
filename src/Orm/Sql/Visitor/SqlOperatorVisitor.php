@@ -6,6 +6,7 @@ use Commonhelp\Util\Expression\Expression;
 use Commonhelp\Orm\Exception\SqlException;
 use Commonhelp\Util\Expression\Operator\SymbolExpression;
 
+
 class SqlOperatorVisitor extends OperatorVisitor{
 	
 	protected $dictionary = array('=', '<', '<=', '>', '>=', '<>');
@@ -14,7 +15,9 @@ class SqlOperatorVisitor extends OperatorVisitor{
 		parent::__construct(false);
 	}
 	
+	
 	public function process(Expression $e){
+		print get_class($e).PHP_EOL;
 		if($e instanceof SymbolExpression){
 			if(!array_key_exists($e->getValue(), $this->dictionary)){
 				throw new SqlException("No match symbol in sql dictionary");

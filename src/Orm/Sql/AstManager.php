@@ -12,7 +12,7 @@ abstract class AstManager{
 	}
 	
 	public function toString(){
-		return $this->visitor->visit($this->ast);
+		return $this->ast->accept($this->visitor);
 	}
 	
 	public function getAst(){

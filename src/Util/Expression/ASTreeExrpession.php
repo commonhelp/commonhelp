@@ -2,8 +2,14 @@
 namespace Commonhelp\Util\Expression;
 
 use Commonhelp\Util\Collections\ArrayCollection;
+use Commonhelp\Util\Expression\Boolean\OrExpression;
+use Commonhelp\Util\Expression\Boolean\AndExpression;
+use Commonhelp\Util\Expression\Boolean\NotExpression;
 
-abstract class ASTreeExpression implements Expression, \ArrayAccess{
+use ArrayAccess;
+use IteratorAggregate;
+
+abstract class ASTreeExpression implements Expression, ArrayAccess, IteratorAggregate{
 	
 	protected $expressions;
 	
@@ -31,6 +37,27 @@ abstract class ASTreeExpression implements Expression, \ArrayAccess{
 	
 	public function offsetUnset($offset) {
 		unset($this->expressions[$offset]);;
+	}
+	
+	public function otherwise(Expression $right){
+		return new OrExpression($this, $right);
+	}
+	
+	public function also(Expression $right){
+		return new AndExpression($this, $right);
+	}
+	
+	public function negate(){
+		return new NotExpression($this);
+	}
+	
+	public function __toString() { 
+		$class = explode('\\', get_class($this)); 
+		return end($class); 
+	} 
+	
+	public function getIterator(){
+		return $this->expressions->getIterator();
 	}
 	
 	
