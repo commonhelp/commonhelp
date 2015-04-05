@@ -7,10 +7,6 @@ abstract class AstManager{
 	protected $visitor;
 	protected $ast;
 	
-	public function __construct(){
-		$this->visitor = new SqlVisitor();
-	}
-	
 	public function toString(){
 		return $this->ast->accept($this->visitor);
 	}

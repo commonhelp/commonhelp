@@ -3,7 +3,7 @@
 namespace Commonhelp\Orm\Sql;
 
 
-class OffsetNode extends Node{
+class OffsetNode extends UnaryNode{
 	
 	public function __construct($amount) {
 		if(!is_int($amount)){

@@ -21,7 +21,8 @@ use Commonhelp\Orm\Exception\SqlException;
  * @ TODO QUOTED STRING using specific visitor for specific dbrms
  * @ TODO Implements BETWEEN and NOT BETWEEN Node
  */
-class LitteralNode extends Node implements SqlExpression, SqlPredictions{
+class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrderingPredictions, SqlAliasPredictions{
+	
 	
 	public function __construct($value) {
 		$this->value = $value;
@@ -29,24 +30,24 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions{
 	
 	
 	//SQL EXPRESSIONS IMPLEMENTATION
-	public function count($distinct = false){
+	public function counter($distinct = false){
 		return new CountFunctionNode($this, $distinct);
 	}
 	
 	public function sum(){
-		return new SumFunctionNode($this, new LitteralNode('sum_id'));
+		return new SumFunctionNode($this);
 	}
 	
 	public function max(){
-		return new MaxFunctionNode($this, new LitteralNode('maximum'));
+		return new MaxFunctionNode($this);
 	}
 	
 	public function min(){
-		return new MinFunctionNode($this, new LitteralNode('minimum'));
+		return new MinFunctionNode($this);
 	}
 	
 	public function average(){
-		return new AverageFunctionNode($this, new LitteralNode('average'));
+		return new AverageFunctionNode($this);
 	}
 	
 	//SQL PREDICTION IMPLEMENTATION
@@ -208,6 +209,21 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions{
 	
 	public function lt_all(array $others){
 		return $this->grouping_all('lt', $others);
+	}
+	
+	public function asc(){
+		return new AscendingNode($this);
+	}
+	
+	public function desc(){
+		return new DescendingNode($this);
+	}
+	
+	public function alias($other){
+		if(!($other instanceof LitteralNode)){
+			$other = new LitteralNode($other);
+		}
+		return new AsNode($this, $other);
 	}
 	
 	public function grouping_any($method_id, array $others){

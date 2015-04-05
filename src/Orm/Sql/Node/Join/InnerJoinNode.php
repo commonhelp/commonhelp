@@ -2,5 +2,6 @@
 
 namespace Commonhelp\Orm\Sql;
 
-class InNode extends BinaryNodeNode{
+class InnerJoinNode extends JoinNode{
+	
 }

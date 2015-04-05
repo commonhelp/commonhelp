@@ -8,8 +8,9 @@ use Commonhelp\Util\Expression\Boolean\NotExpression;
 
 use ArrayAccess;
 use IteratorAggregate;
+use Countable;
 
-abstract class ASTreeExpression implements Expression, ArrayAccess, IteratorAggregate{
+abstract class ASTreeExpression implements Expression, ArrayAccess, IteratorAggregate, Countable{
 	
 	protected $expressions;
 	
@@ -60,6 +61,9 @@ abstract class ASTreeExpression implements Expression, ArrayAccess, IteratorAggr
 		return $this->expressions->getIterator();
 	}
 	
+	public function count(){
+		return count($this->expressions);
+	}
 	
 }
 

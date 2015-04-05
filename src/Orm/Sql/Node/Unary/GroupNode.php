@@ -2,5 +2,8 @@
 
 namespace Commonhelp\Orm\Sql;
 
-class NotInNode extends BinaryNodeNode{
+
+
+class GroupNode extends Node{
+	
 }

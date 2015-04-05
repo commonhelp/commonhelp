@@ -17,14 +17,14 @@ class SqlOperatorVisitor extends OperatorVisitor{
 	
 	
 	public function process(Expression $e){
-		print get_class($e).PHP_EOL;
 		if($e instanceof SymbolExpression){
 			if(!array_key_exists($e->getValue(), $this->dictionary)){
 				throw new SqlException("No match symbol in sql dictionary");
 			}
 			return $this->dictionary[$e->getValue()];
-		}else if($e instanceof LitteralNode){
-			return $e->getValue();
+		}else if($e instanceof Node){
+			$v = new SqlSelectVisitor(); // could create problems with INSERT,UPDATE and DELETE
+			return $e->accept($v);
 		}
 	}
 	

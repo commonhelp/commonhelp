@@ -4,23 +4,25 @@ namespace Commonhelp\Orm\Sql;
 
 class SelectManager extends AstManager{
 	
+	protected $core;
 	
 	public function __construct($table = null){
-		parent::__construct();
+		$this->visitor = new SqlSelectVisitor();
 		$this->ast = new SelectNode();
+		$this->core = $this->ast['cores']->last();
 		if(null !== $table){
 			$this->from($table);
 		}
 	}
 	
 	public function project(){
-		$this->ast['projections'] = new ProjectNode();
+		$this->core['projections'] = new ProjectNode();
 		$projections = func_get_args();
 		foreach($projections as $projection){
-			if($projection instanceof LitteralNode){
-				$this->ast['projections'][] = $projection;
+			if($projection instanceof Node){
+				$this->core['projections'][] = $projection;
 			}else{
-				$this->ast['projections'][] = new LitteralNode($projection);
+				$this->core['projections'][] = new LitteralNode($projection);
 			}
 		}
 		
@@ -28,13 +30,13 @@ class SelectManager extends AstManager{
 	}
 	
 	public function group(){
-		$this->ast['groups'] = new Node();
+		$this->core['groups'] = new GroupNode();
 		$columns = func_get_args();
 		foreach($columns as $column){
-			if($column instanceof LitteralNode){
-				$this->ast['groups'][] = $column;
+			if($column instanceof Node){
+				$this->core['groups'][] = $column;
 			}else{
-				$this->ast['groups'][] = new LitteralNode($column);
+				$this->core['groups'][] = new LitteralNode($column);
 			}
 		}
 		
@@ -42,10 +44,10 @@ class SelectManager extends AstManager{
 	}
 	
 	public function order(){
-		$this->ast['orders'] = new Node();
+		$this->ast['orders'] = new OrderingNode();
 		$columns = func_get_args();
 		foreach($columns as $column){
-			if($column instanceof LitteralNode){
+			if($column instanceof Node){
 				$this->ast['orders'][] = $column;
 			}else{
 				$this->ast['orders'][] = new LitteralNode($column);
@@ -68,19 +70,28 @@ class SelectManager extends AstManager{
 	}
 	
 	public function having($expression){
-		$this->ast['having'] = new HavingNode($expression);
+		$this->core['having'] = new HavingNode($expression);
 		
 		return $this;
 	}
 	
 	public function where($expression){
-		$this->ast['wheres'] = new WhereNode($expression);
+		$this->core['wheres'] = new WhereNode($expression);
 		
 		return $this;
 	}
 	
-	public function join($relation, $class){
+	public function join(Sql $relation, JoinNode $class = null){
+		if(null === $relation){
+			return $this;
+		}
+		if(null === $class){
+			$class = new InnerJoinNode($relation);
+		}
+		$class = new $class($relation);
+		$this->core['source']['right'] = $class;
 		
+		return $this;
 	}
 	
 	public function on($expression){
@@ -94,7 +105,7 @@ class SelectManager extends AstManager{
 			$table = $table->getTable();
 		}
 		
-		$this->ast['froms'] = new LitteralNode($table);
+		$this->core['source']['left'] = new LitteralNode($table);
 	}
 	
 }

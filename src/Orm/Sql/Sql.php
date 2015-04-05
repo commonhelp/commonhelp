@@ -37,7 +37,7 @@ class Sql implements \ArrayAccess{
 	
 	public function order(){
 		$args = func_get_args();
-		return call_user_func_array(array($this->form($this), 'order'), $args);
+		return call_user_func_array(array($this->from($this), 'order'), $args);
 	}
 	
 	public function where($condition){
@@ -89,6 +89,14 @@ class Sql implements \ArrayAccess{
 	}
 	
 	public function offsetSet($offset, $value) {
+	}
+	
+	public function toString(){
+		return $this->table;
+	}
+	
+	public function __toString(){
+		return $this->toString();
 	}
 	
 }

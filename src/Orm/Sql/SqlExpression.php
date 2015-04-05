@@ -5,7 +5,7 @@ namespace Commonhelp\Orm\Sql;
 
 interface SqlExpression{
 	
-	public function count($distinct = false);
+	public function counter($distinct = false);
 	
 	public function sum();
 	

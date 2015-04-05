@@ -5,6 +5,7 @@ use Commonhelp\Util\Expression\Boolean\BooleanVisitor;
 use Commonhelp\Util\Expression\Expression;
 use Commonhelp\Util\Expression\Boolean\NonTerminalExpression;
 use Commonhelp\Util\Expression\Boolean\TerminalExpression;
+use Commonhelp\Util\Expression\Operator\OperatorExpression;
 
 
 class SqlBooleanVisitor extends BooleanVisitor{
@@ -17,7 +18,6 @@ class SqlBooleanVisitor extends BooleanVisitor{
 	
 	
 	public function process(Expression $e){
-		print get_class($e).PHP_EOL;
 		if($e instanceof NonTerminalExpression){
 			if(!in_array($e->getValue(), $this->dictionaryMap)){
 				throw new \RuntimeException("No match symbol");
@@ -26,8 +26,9 @@ class SqlBooleanVisitor extends BooleanVisitor{
 			return $this->dictonary[$key];
 		}else if($e instanceof TerminalExpression){
 			return $e->getValue();
-		}else if($e instanceof GroupingNode){
-			return $e->getValue();
+		}else if($e instanceof OperatorExpression){
+			$v = new SqlOperatorVisitor();
+			return $e->accept($v);
 		}
 	}
 }

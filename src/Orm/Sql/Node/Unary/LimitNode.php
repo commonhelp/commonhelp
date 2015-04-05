@@ -4,7 +4,7 @@ namespace Commonhelp\Orm\Sql;
 
 use Commonhelp\Orm\Exception\SqlException;
 
-class LimitNode extends Node{
+class LimitNode extends UnaryNode{
 	
 	public function __construct($amount) {
 		if(!is_int($amount)){
