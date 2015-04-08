@@ -11,4 +11,21 @@ use Commonhelp\Util\Expression\Boolean\BooleanExpression;
 
 class SqlUpdateVisitor extends SqlVisitor{
 	
+	public function visitUpdate(UpdateNode $n){
+		
+		$table = '';
+		if(isset($n['relation'])){
+			$table .= $n['relation']->getRelation();
+		}
+		
+		$values = '';
+		if(isset($n['values'])){
+			$values = " SET ";
+			print_r($n['values']);
+			$values .= $n['values']->accept($this);
+		}
+		
+		return $this->process($n).$table.$values;
+	}
+	
 }
