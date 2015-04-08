@@ -57,6 +57,10 @@ class Sql implements \ArrayAccess{
 		return call_user_func_array(array($this->from($this), 'project'), $args);
 	}
 	
+	public function distinct($value = true){
+		return $this->from($this)->distinct($value);
+	}
+	
 	public function having($condition){
 		return $this->from($this)->having($condition);
 	}

@@ -94,6 +94,11 @@ class SqlSelectVisitor extends SqlVisitor{
 	}
 	
 	public function visitSelectCore(SelectCoreNode $n){
+		$distinct = "";
+		if(null !== $n['set_quantifier']){
+			$distinct = $n['set_quantifier']->accept($this);
+		}
+		
 		$projections = '';
 		if(isset($n['projections'])){
 			$projections .= ' ';
@@ -124,7 +129,11 @@ class SqlSelectVisitor extends SqlVisitor{
 			$having = $n['having']->accept($this);
 		}
 		
-		return $this->process($n).$projections.$from.$where.$group.$having;
+		return $this->process($n).$distinct.$projections.$from.$where.$group.$having;
+	}
+	
+	public function visitDistinct(DistinctNode $n){
+		return " DISTINCT";
 	}
 	
 	public function visitJoinSource(JoinSourceNode $n){
@@ -141,19 +150,50 @@ class SqlSelectVisitor extends SqlVisitor{
 	}
 	
 	public function visitInnerJoin(InnerJoinNode $n){
-		$collector = " INNER JOIN";
+		$collector = "INNER JOIN ";
+		$collector .= $n['left']->accept($this);
+		if(null !== $n['right']){
+			$collector .= " ".$n['right']->accept($this);
+		}
+		
+		return $collector;
 	}
 	
 	public function visitOuterJoin(OuterJoinNode $n){
+		$collector = "LEFT OUTER JOIN ";
+		$collector .= $n['left']->accept($this). " ".$n['right']->accept($this);
 		
+		return $collector;
 	}
 	
 	public function visitRightOuterJoin(RightOuterJoinNode $n){
+		$collector = "RIGHT OUTRER JOIN ";
+		$collector .= $n['left']->accept($this). " ".$n['right']->accept($this);
 		
+		return $collector;
 	}
 	
 	public function visitFullOuterJoin(FullOuterJoinNode $n){
+		$collector = "FULL OUTER JOIN ";
+		$collector .= $n['left']->accept($this). " ".$n['right']->accept($this);
 		
+		return $collector;
+	}
+	
+	public function visitUnion(UnionNode $n){
+		if(null === $n->getOp()){
+			return "(".$n['left']->accept($this)." UNION ".$n['right']->accept($this).")";
+		}else if($n->getOp() == 'all'){
+			return "(".$n['left']->accept($this)." UNION ALL ".$n['right']->accept($this).")";
+		}
+	}
+	
+	public function visitIntersect(IntersectNode $n){
+		return "(".$n['left']->accept($this)." INTERSECT ".$n['right']->accept($this).")";
+	}
+	
+	public function visitExcept(ExceptNode $n){
+		return "(".$n['left']->accept($this)." EXCEPT ".$n['right']->accept($this).")";
 	}
 	
 	public function visitCountFunction(CountFunctionNode $n){

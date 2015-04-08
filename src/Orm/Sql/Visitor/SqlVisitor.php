@@ -40,6 +40,16 @@ abstract class SqlVisitor extends Visitor{
 		return $expression->accept($visitor);
 	}
 	
+	public function visitOn(OnNode $n){
+		$collector = "ON ";
+		$expression = $n['node'];
+		if($expression instanceof OperatorExpression){
+			$visitor = new SqlOperatorVisitor();
+		}
+		
+		return $collector.$n['node']->accept($visitor);
+	}
+	
 
 	public function process(Expression $e){
 		return $e->getValue();

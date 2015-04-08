@@ -12,6 +12,12 @@ class SqlSelectTest extends \PHPUnit_Framework_TestCase{
 		$this->assertEquals('SELECT users.name, users.age FROM users', $pComplex);
 	}
 	
+	public function testProjectDistinct(){
+		$users = Sql::table('users');
+		$pDistinct = $users->distinct()->project('*');
+		$this->assertEquals("SELECT DISTINCT * FROM users", $pDistinct);
+	}
+	
 	public function testSqlWhere(){
 		$users = Sql::table('users');
 		$select = $users->project('*')->where($users['name']->eq('marcoski')->also($users['age']->lt('25')->otherwise($users['age']->gt('18'))));
@@ -55,9 +61,20 @@ class SqlSelectTest extends \PHPUnit_Framework_TestCase{
 	public function testJoin(){
 		$users = Sql::table('users');
 		$comments = Sql::table('comments');
-		$join = $users->project('*')->join($comments);
+		$join = $users->project('*')->join($comments)->on($users['age']->eq('25'));
+		$this->assertEquals("SELECT * FROM users INNER JOIN comments ON users.age  =  25", $join);
+	}
+	
+	public function testUnion(){
+		$users = Sql::table('users');
 		
-		print $join.PHP_EOL;
+		$first = $users->project($users['id'])->where($users['karma']->gt(100));
+		$second = new SelectManager($users);
+		$second->project($users['name'], $users['id'])->where($users['age']->gt(30));
+		
+		$union = $first->union($second);
+		
+		$this->assertEquals("(SELECT users.id FROM users WHERE users.karma  >  100 UNION SELECT users.name, users.id FROM users WHERE users.age  >  30)", $union);
 		
 	}
 	

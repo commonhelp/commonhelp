@@ -86,19 +86,47 @@ class SelectManager extends AstManager{
 			return $this;
 		}
 		if(null === $class){
-			$class = new InnerJoinNode($relation);
+			$class = new InnerJoinNode($relation, null);
 		}
-		$class = new $class($relation);
+		$class = new $class($relation, null);
 		$this->core['source']['right'] = $class;
 		
 		return $this;
 	}
 	
 	public function on($expression){
-		
+		$oR = $this->core['source']['right']['right'] = new OnNode($expression);
+		return $this;
 	}
 
-
+	public function distinct($value = true){
+		if($value){
+			$this->core['set_quantifier'] = new DistinctNode();
+		}else{
+			$this->core['set_quantifier'] = null;
+		}
+		
+		return $this;
+	}
+	
+	public function with(){
+		
+	}
+	
+	public function union(SelectManager $other, $operation=null){
+		$this->ast = new UnionNode($this->ast, $other->getAst(), $operation);
+		return $this;
+	}
+	
+	public function intersect(SelectManager $other){
+		$this->ast = new IntersectNode($this->ast, $other->getAst());
+		return $this;
+	}
+	
+	public function except(){
+		$this->ast = new ExceptNode($this->ast, $other->getAst());
+		return $this;
+	}
 	
 	public function from($table){
 		if(!is_string($table)){
