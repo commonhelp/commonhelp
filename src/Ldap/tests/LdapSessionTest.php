@@ -20,7 +20,7 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 	protected $validDn = 'cn=admin,dc=unponteper,dc=it';
 	protected $invalidDn = 'cn=admin,dc=unponteper,dc';
 	
-	/*public function testConnection(){
+	public function testConnection(){
 		$session = new LdapSession($this->options);
 		$res = $session->getResource();
 		
@@ -70,7 +70,7 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 		
 		$parsed = $filter->visit($expression);
 		$this->assertEquals($expected, $parsed);
-	}*/
+	}
 	
 	public function testFilter(){
 		$expected = "(&(|(objectClass=inetOrgPerson)(objectClass=user))(userCertificate=*))";

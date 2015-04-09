@@ -15,5 +15,9 @@ abstract class Mapper{
 	public abstract function update();
 	public abstract function delete();
 	
+	
+	public function getVisitor(){
+		return $this->layer->getVisitor();
+	}
 }
 

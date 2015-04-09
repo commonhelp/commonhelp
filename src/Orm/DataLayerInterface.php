@@ -2,12 +2,21 @@
 
 namespace Commonhelp\Orm;
 
-interface DataLayerInterface{
+abstract class DataLayerInterface{
+	protected static $instance = false;
+	protected $visitor;
 	
-	function create();
-	function read();
-	function update();
-	function delete();
+	public static function instance(array $options){
+		if(!static::$instance){
+			static::$instance = new LdapDataLayer($options);
+		}
+		
+		return static::$instance;
+	}
+	
+	public function getVisitor(){
+		return $this->visitor;
+	}
 	
 }
 

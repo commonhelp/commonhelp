@@ -3,6 +3,6 @@
 namespace Commonhelp\Orm\Exception;
 
 
-class SqlException extends \Exception{
+class DataLayerException extends \Exception{
  
 }

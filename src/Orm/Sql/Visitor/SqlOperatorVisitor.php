@@ -23,7 +23,7 @@ class SqlOperatorVisitor extends OperatorVisitor{
 			}
 			return $this->dictionary[$e->getValue()];
 		}else if($e instanceof Node){
-			$v = new SqlSelectVisitor(); // could create problems with INSERT,UPDATE and DELETE
+			$v = new SqlVisitor(); // could create problems with INSERT,UPDATE and DELETE
 			return $e->accept($v);
 		}
 	}

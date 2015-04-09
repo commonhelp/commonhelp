@@ -7,7 +7,7 @@ use Commonhelp\Util\Expression\Operator\EqualExpression;
 class UpdateManager extends AstManager{
 	
 	public function __construct(){
-		$this->visitor = new SqlUpdateVisitor();
+		parent::__construct();
 		$this->ast = new UpdateNode();
 	}
 	

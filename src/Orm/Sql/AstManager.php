@@ -2,10 +2,22 @@
 
 namespace Commonhelp\Orm\Sql;
 
+use Commonhelp\Orm\PdoDataLayer;
 abstract class AstManager{
 	
 	protected $visitor;
 	protected $ast;
+	protected $engine;
+	
+	public function __construct(){
+		$this->visitor = new SqlVisitor();
+		$this->engine = null;
+	}
+	
+	public function engine(Mapper $engine){
+		$this->engine = $engine;
+		$this->visitor = $engine->getVisitor();
+	}
 	
 	public function toString(){
 		return $this->ast->accept($this->visitor);

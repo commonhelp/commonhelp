@@ -5,7 +5,7 @@ namespace Commonhelp\Orm\Sql;
 class DeleteManager extends AstManager{
 
 	public function __construct(){
-		$this->visitor = new SqlDeleteVisitor();
+		parent::__construct();
 		$this->ast = new DeleteNode();
 	}
 	

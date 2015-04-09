@@ -2,16 +2,22 @@
 
 namespace Commonhelp\Orm\Sql;
 
+use Commonhelp\Orm\PdoDataLayer;
 class Sql implements \ArrayAccess{
 	
 	protected $table;
+	
 	
 	public function __construct($table){
 		$this->table = $table;
 	}
 	
-	public static function table($table){
-		return new static($table);
+	public static function table($table, $engine=null){
+		return new static($table, $engine);
+	}
+	
+	public function getEngine(){
+		return $this->engine;
 	}
 	
 	public function getTable(){

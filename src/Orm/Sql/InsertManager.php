@@ -5,7 +5,7 @@ namespace Commonhelp\Orm\Sql;
 class InsertManager extends AstManager{
 	
 	public function __construct(){
-		$this->visitor = new SqlInsertVisitor();
+		parent::__construct();
 		$this->ast = new InsertNode();
 	}
 	

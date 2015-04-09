@@ -7,7 +7,7 @@ class SelectManager extends AstManager{
 	protected $core;
 	
 	public function __construct($table = null){
-		$this->visitor = new SqlSelectVisitor();
+		parent::__construct();
 		$this->ast = new SelectNode();
 		$this->core = $this->ast['cores']->last();
 		if(null !== $table){
