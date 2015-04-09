@@ -11,10 +11,6 @@ use Commonhelp\Util\Expression\Boolean\BooleanExpression;
 
 class SqlSelectVisitor extends SqlVisitor{
 	
-	public function visitLimit(LimitNode $n){
-		return $this->process($n);
-	}
-	
 	public function visitOffset(OffsetNode $n){
 		return $this->process($n);
 	}
@@ -80,7 +76,6 @@ class SqlSelectVisitor extends SqlVisitor{
 	
 		$limit = '';
 		if(isset($n['limit'])){
-			$limit = ' LIMIT ';
 			$limit .= $n['limit']->accept($this);
 		}
 	
@@ -116,12 +111,12 @@ class SqlSelectVisitor extends SqlVisitor{
 		if(isset($n['groups'])){
 			$g = $n['groups']->accept($this);
 			$group = ' GROUP BY '.$g;
-			}
+		}
 		
-			$where = '';
-			if(isset($n['wheres'])){
-				$expr = $n['wheres']->accept($this);
-			$where = " WHERE {$expr}";
+		$where = '';
+		if(isset($n['wheres'])){
+			$expr = $n['wheres']->accept($this);
+			$where = $expr;
 		}
 	
 		$having = '';

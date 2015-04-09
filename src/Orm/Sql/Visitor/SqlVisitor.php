@@ -25,6 +25,10 @@ abstract class SqlVisitor extends Visitor{
 		return $n->getRelation().'.'.$n->getValue();
 	}
 	
+	public function visitLimit(LimitNode $n){
+		return " LIMIT ".$this->process($n);
+	}
+	
 	public function visitWhere(WhereNode $n){
 		$expression = $this->process($n);
 		if(!($expression instanceof BinaryExpression)){
@@ -37,7 +41,7 @@ abstract class SqlVisitor extends Visitor{
 			$visitor = new SqlBooleanVisitor();
 		}
 		
-		return $expression->accept($visitor);
+		return " WHERE ".$expression->accept($visitor);
 	}
 	
 	public function visitOn(OnNode $n){

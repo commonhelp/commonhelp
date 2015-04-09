@@ -55,6 +55,10 @@ class UpdateManager extends AstManager{
 		return $this;
 	}
 	
+	public function key(AttributeNode $key){
+		$this->ast['key'] = $key;
+	}
+	
 }
 
 

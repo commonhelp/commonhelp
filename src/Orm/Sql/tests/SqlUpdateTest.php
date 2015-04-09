@@ -11,7 +11,7 @@ class SqlUpdateTest extends \PHPUnit_Framework_TestCase{
 		$update->set(array(array($users['name'], 'Bob'), array($users['admin'], true)));
 		$update->where($users['id']->eq(1));
 		
-		print $update.PHP_EOL;
+		$this->assertEquals("UPDATE users SET users.name  =  Bob, users.admin  =  1 WHERE users.id  =  1", $update);
 	}
 	
 }
