@@ -8,4 +8,12 @@ class SelectCoreNode extends Node{
 		$this['source'] = new JoinSourceNode(null, null);	
 		$this['set_quantifier'] = null;
 	}
+	
+	public function from($value=null){
+		if(null === $value){
+			return $this['source']['left'];
+		}
+		
+		$this['source']['left'] = $value;
+	}
 }

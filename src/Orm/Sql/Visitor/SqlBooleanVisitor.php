@@ -12,8 +12,11 @@ class SqlBooleanVisitor extends BooleanVisitor{
 	
 	protected $dictonary = array('AND', 'OR', 'NOT');
 	
-	public function __construct(){
+	protected $parentVisitor;
+	
+	public function __construct(SqlVisitor $parent){
 		parent::__construct();
+		$this->parentVisitor = $parent;
 	}
 	
 	
@@ -27,8 +30,10 @@ class SqlBooleanVisitor extends BooleanVisitor{
 		}else if($e instanceof TerminalExpression){
 			return $e->getValue();
 		}else if($e instanceof OperatorExpression){
-			$v = new SqlOperatorVisitor();
+			$v = new SqlOperatorVisitor($this->parentVisitor);
 			return $e->accept($v);
+		}else if($e instanceof BinaryNode){
+			$e->accept($this->parentVisitor);
 		}
 	}
 }

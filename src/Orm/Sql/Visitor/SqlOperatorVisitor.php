@@ -9,9 +9,12 @@ use Commonhelp\Util\Expression\Operator\SymbolExpression;
 
 class SqlOperatorVisitor extends OperatorVisitor{
 	
-	protected $dictionary = array('=', '<', '<=', '>', '>=', '<>');
+	protected $dictionary = array('=', '<', '<=', '>', '>=', '<>', 'IS', 'IS NOT');
 	
-	public function __construct(){
+	protected $parentVisitor;
+	
+	public function __construct(SqlVisitor $parent){
+		$this->parentVisitor = $parent;
 		parent::__construct(false);
 	}
 	
@@ -23,8 +26,7 @@ class SqlOperatorVisitor extends OperatorVisitor{
 			}
 			return $this->dictionary[$e->getValue()];
 		}else if($e instanceof Node){
-			$v = new SqlVisitor(); // could create problems with INSERT,UPDATE and DELETE
-			return $e->accept($v);
+			return $e->accept($this->parentVisitor);
 		}
 	}
 	

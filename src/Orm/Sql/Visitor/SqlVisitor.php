@@ -25,11 +25,14 @@ class SqlVisitor extends Visitor{
 	}
 	
 	public function visitLitteral(LitteralNode $n){
+		if($n->isToQuote()){
+			return $this->quote($this->process($n));
+		}
 		return $this->process($n);
 	}
 	
 	public function visitAttribute(AttributeNode $n){
-		return $n->getRelation().'.'.$n->getValue();
+		return $this->quoteTableName($n->getRelation()).'.'.$this->quoteColumnName($n->getValue());
 	}
 	
 	public function visitLimit(LimitNode $n){
@@ -42,20 +45,49 @@ class SqlVisitor extends Visitor{
 			throw new SqlException('Expression must be of BinaryExpression Type');
 		}
 		if($expression instanceof OperatorExpression){
-			$visitor = new SqlOperatorVisitor();
+			$visitor = new SqlOperatorVisitor($this);
+			$expr = $expression->accept($visitor);
 		}
 		if($expression instanceof BooleanExpression){
-			$visitor = new SqlBooleanVisitor();
+			$visitor = new SqlBooleanVisitor($this);
+			$expr = $expression->accept($visitor);
+		}
+		if($expression instanceof BinaryNode){
+			$expr = $expression->accept($this);
 		}
 		
-		return " WHERE ".$expression->accept($visitor);
+		return " WHERE ".$expr;
+	}
+	
+	public function visitMatching(MatchingNode $n){
+		$collector = $this->quoteColumnName($n['left']->accept($this));
+		$collecotr .= " LIKE ";
+		$collector .= $this->quote($n['right']->accept($this));
+		if(null !== $n->getEscape()){
+			$collector .= " ESCAPE ";
+			$collector .= $n->getEscape()->accept($this);
+		}
+		
+		return $collector;
+	}
+	
+	public function visitNotMatching(NotMatchingNode $n){
+		$collector = $this->quoteColumnName($n['left']->accept($this));
+		$collecotr .= " NOT LIKE ";
+		$collector .= $this->quote($n['right']->accept($this));
+		if(null !== $n->getEscape()){
+			$collector .= " ESCAPE ";
+			$collector .= $n->getEscape()->accept($this);
+		}
+		
+		return $collector;
 	}
 	
 	public function visitOn(OnNode $n){
 		$collector = "ON ";
 		$expression = $n['node'];
 		if($expression instanceof OperatorExpression){
-			$visitor = new SqlOperatorVisitor();
+			$visitor = new SqlOperatorVisitor($this);
 		}
 		
 		return $collector.$n['node']->accept($visitor);
@@ -63,7 +95,7 @@ class SqlVisitor extends Visitor{
 	
 	public function visitUpdate(UpdateNode $n){
 		if(!isset($n['orders']) && !isset($n['limit'])){
-			$wheres = $n['wheres'];
+			$wheres = isset($n['wheres']) ? $n['wheres'] : null;
 		}else{
 			$wheres = new InNode($n['key'], $this->buildSubSelect($n['key'], $n));
 		}
@@ -76,15 +108,15 @@ class SqlVisitor extends Visitor{
 		if(isset($n['values'])){
 			$vals = array();
 			foreach($n['values'] as $value){
-				$opVisit = new SqlOperatorVisitor();
+				$opVisit = new SqlOperatorVisitor($this);
 				$vals[] = $value->accept($opVisit);
 			}
 			$values = " SET ".implode(', ', $vals);
 		}
 	
 		$where = '';
-		if(isset($n['wheres'])){
-			$expr = $n['wheres']->accept($this);
+		if(null !== $wheres){
+			$expr = $wheres->accept($this);
 			$where = $expr;
 		}
 	
@@ -136,7 +168,7 @@ class SqlVisitor extends Visitor{
 	
 	public function visitHaving(HavingNode $n){
 		$expression = $this->process($n);
-		$opVisitor = new SqlOperatorVisitor();
+		$opVisitor = new SqlOperatorVisitor($this);
 		$expr = $expression->accept($opVisitor);
 		return " HAVING {$expr}";
 	}
@@ -214,7 +246,7 @@ class SqlVisitor extends Visitor{
 	public function visitJoinSource(JoinSourceNode $n){
 		$collector = '';
 		if(null !== $n['left']){
-			$collector .= $n['left']->accept($this);
+			$collector .= $this->quoteTableName($n['left']->accept($this));
 		}
 		if(null !== $n['right']){
 			$collector .= $n['left'] !== null ? " " : "";
@@ -226,7 +258,7 @@ class SqlVisitor extends Visitor{
 	
 	public function visitInnerJoin(InnerJoinNode $n){
 		$collector = "INNER JOIN ";
-		$collector .= $n['left']->accept($this);
+		$collector .= $this->quoteTableName($n['left']->accept($this));
 		if(null !== $n['right']){
 			$collector .= " ".$n['right']->accept($this);
 		}
@@ -236,21 +268,21 @@ class SqlVisitor extends Visitor{
 	
 	public function visitOuterJoin(OuterJoinNode $n){
 		$collector = "LEFT OUTER JOIN ";
-		$collector .= $n['left']->accept($this). " ".$n['right']->accept($this);
+		$collector .= $this->quoteTableName($n['left']->accept($this)). " ".$n['right']->accept($this);
 	
 		return $collector;
 	}
 	
 	public function visitRightOuterJoin(RightOuterJoinNode $n){
 		$collector = "RIGHT OUTRER JOIN ";
-		$collector .= $n['left']->accept($this). " ".$n['right']->accept($this);
+		$collector .= $this->quoteTableName($n['left']->accept($this)). " ".$n['right']->accept($this);
 	
 		return $collector;
 	}
 	
 	public function visitFullOuterJoin(FullOuterJoinNode $n){
 		$collector = "FULL OUTER JOIN ";
-		$collector .= $n['left']->accept($this). " ".$n['right']->accept($this);
+		$collector .= $this->quoteTableName($n['left']->accept($this)). " ".$n['right']->accept($this);
 	
 		return $collector;
 	}
@@ -305,7 +337,7 @@ class SqlVisitor extends Visitor{
 	public function visitInsert(InsertNode $n){
 		$table = '';
 		if(isset($n['relation'])){
-			$table = $n['relation']->getRelation();
+			$table = $this->quoteTableName($n['relation']->getRelation());
 		}
 	
 		$columns = '';
@@ -317,7 +349,7 @@ class SqlVisitor extends Visitor{
 		if(isset($n['values'])){
 			$values = $n['values']->accept($this);
 		}else if(isset($n['select'])){
-			$values = $n['select']->toString();
+			$values = $n['select']->toSql();
 		}
 	
 		return $this->process($n).$table.$columns.$values;
@@ -329,18 +361,25 @@ class SqlVisitor extends Visitor{
 		}
 		$collector = array();
 		foreach($ns as $n){
-			$collector[] = $n->getValue();
+			$collector[] = $this->quoteColumnName($n->getValue());
 		}
 	
 		return " (".implode(', ', $collector).") ";
 	}
 	
 	public function visitValues(ValuesNode $n){
-		return "VALUES (".implode(', ', $n->getValue()).")";
+		$vals = array();
+		foreach($n->getValue() as $val){
+			$vals[] = $this->quote($val);
+		}
+		return "VALUES (".implode(', ', $vals).")";
 	}
 	
 	protected function processFunction(FunctionNode $n){
 		$alias = null !== $n['alias'] ? $n['alias']->accept($this) : null;
+		if(null !== $alias){
+			$alias = $this->quoteColumnName($alias);
+		}
 		$alias = null !== $alias ? " AS {$alias}" : "";
 	
 		$name = $this->process($n)->accept($this);
@@ -349,7 +388,7 @@ class SqlVisitor extends Visitor{
 	}
 	
 	public function visitDelete(DeleteNode $n){
-		$relation = " FROM ".$n['relation']->accept($this);
+		$relation = " FROM ".$this->quoteTableName($n['relation']->accept($this));
 	
 		$where="";
 		if(isset($n['wheres'])){
@@ -383,7 +422,7 @@ class SqlVisitor extends Visitor{
 		return $e->getValue();
 	}
 	
-	protected function quote($name){
+	public function quote($name){
 		if(null === $this->connection){
 			return "'{$name}'";
 		}
@@ -391,7 +430,7 @@ class SqlVisitor extends Visitor{
 		return $this->connection->quote($name);
 	}
 	
-	protected function quoteColumnName($name){
+	public function quoteColumnName($name){
 		if(null === $this->connection){
 			return "\"{$name}\"";
 		}
@@ -399,7 +438,7 @@ class SqlVisitor extends Visitor{
 		return $this->connection->quoteColumnName($name);
 	}
 	
-	protected function quoteTableName($name){
+	public function quoteTableName($name){
 		if(null === $this->connection){
 			return "\"{$name}\"";
 		}

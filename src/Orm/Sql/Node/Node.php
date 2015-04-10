@@ -7,6 +7,9 @@ use Commonhelp\Util\Expression\Visitor;
 
 class Node extends ASTreeExpression{
 	
+	const IS = 6;
+	const ISNOT = 7;
+	
 	protected $value;
 	
 	public function getValue(){

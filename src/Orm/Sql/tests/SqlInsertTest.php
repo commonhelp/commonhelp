@@ -9,7 +9,7 @@ class SqlInsertTest extends \PHPUnit_Framework_TestCase{
 		$insert = new InsertManager();
 		$insert->insert(array(array($users['name'], 'Bob'), array($users['admin'], true)));
 		
-		$this->assertEquals("INSERT INTO users (name, admin) VALUES (Bob, 1)", $insert);
+		$this->assertEquals("INSERT INTO \"users\" (\"name\", \"admin\") VALUES ('Bob', '1')", $insert->toSql());
 	}
 	
 	public function testInsertSelect(){
@@ -22,7 +22,7 @@ class SqlInsertTest extends \PHPUnit_Framework_TestCase{
 		
 		$insert->select($select);
 		
-		$this->assertEquals("INSERT INTO users (name, admin) SELECT users.name, users.admin FROM users WHERE users.age  >  20", $insert);
+		$this->assertEquals("INSERT INTO \"users\" (\"name\", \"admin\") SELECT \"users\".\"name\", \"users\".\"admin\" FROM \"users\" WHERE \"users\".\"age\"  >  20", $insert->toSql());
 	}
 	
 }

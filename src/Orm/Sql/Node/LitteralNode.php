@@ -23,11 +23,19 @@ use Commonhelp\Orm\Exception\SqlException;
  */
 class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrderingPredictions, SqlAliasPredictions{
 	
+	protected $toQuote;
 	
-	public function __construct($value) {
+	public function __construct($value, $toQuote=false) {
 		$this->value = $value;
+		$this->toQuote = $toQuote;
+		if(is_numeric($this->value)){
+			$this->toQuote = false;
+		}
 	}
 	
+	public function isToQuote(){
+		return $this->toQuote;
+	}
 	
 	//SQL EXPRESSIONS IMPLEMENTATION
 	public function counter($distinct = false){
@@ -53,9 +61,9 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrd
 	//SQL PREDICTION IMPLEMENTATION
 	public function not_eq($other){
 		if(!($other instanceof LitteralNode)){
-			$other = new LitteralNode($other);
+			$other = new LitteralNode($other, true);
 		}
-		return new NotEqualExpression($this, $other);
+		return new NotEqualNode($this, $other);
 	}
 	
 	public function not_eq_any(array $others){
@@ -68,9 +76,9 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrd
 	
 	public function eq($other){
 		if(!($other instanceof LitteralNode)){
-			$other = new LitteralNode($other);
+			$other = new LitteralNode($other, true);
 		}
-		return new EqualExpression($this, $other);
+		return new EqualNode($this, $other);
 	}
 	
 	public function eq_any(array $others){
@@ -121,14 +129,14 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrd
 		return $this->grouping_all('not_in', $others);
 	}
 	
-	public function matches($other){
+	public function matches($other, $escape=null){
 		if(!($other instanceof LitteralNode)){
-			$other = new LitteralNode($other);
+			$other = new LitteralNode($other, true);
 		}
-		return new MatchingNode($this, $other);
+		return new MatchingNode($this, $other, $escape);
 	}
 	
-	public function match_any(array $others){
+	public function match_any(array $others, $escape=null){
 		return $this->grouping_any('matches', $others);
 	}
 	
@@ -136,24 +144,24 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrd
 		return $this->grouping_all('matches', $others);
 	}
 	
-	public function does_not_match($other){
+	public function does_not_match($other, $escape=null){
 		if(!($other instanceof LitteralNode)){
-			$other = new LitteralNode($other);
+			$other = new LitteralNode($other, true);
 		}
-		return new NotMatchingNode($this, $other);
+		return new NotMatchingNode($this, $other, $escape);
 	}
 	
-	public function does_not_match_any(array $others){
+	public function does_not_match_any(array $others, $escape=null){
 		return $this->grouping_any('does_not_match', $others);
 	}
 	
-	public function does_not_match_all(array $others){
+	public function does_not_match_all(array $others, $escape=null){
 		return $this->grouping_all('does_not_match', $others);
 	}
 	
 	public function gteq($other){
 		if(!($other instanceof LitteralNode)){
-			$other = new LitteralNode($other);
+			$other = new LitteralNode($other, true);
 		}
 		return new GreaterThanEqualExpression($this, $other);
 	}
@@ -168,7 +176,7 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrd
 	
 	public function gt($other){
 		if(!($other instanceof LitteralNode)){
-			$other = new LitteralNode($other);
+			$other = new LitteralNode($other, true);
 		}
 		return new GreaterThanExpression($this, $other);
 	}
@@ -183,7 +191,7 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrd
 	
 	public function lteq($other){
 		if(!($other instanceof LitteralNode)){
-			$other = new LitteralNode($other);
+			$other = new LitteralNode($other, true);
 		}
 		return new LessThanEqualExpression($this, $other);
 	}
@@ -198,7 +206,7 @@ class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrd
 	
 	public function lt($other){
 		if(!($other instanceof LitteralNode)){
-			$other = new LitteralNode($other);
+			$other = new LitteralNode($other, true);
 		}
 		return new LessThanExpression($this, $other);
 	}

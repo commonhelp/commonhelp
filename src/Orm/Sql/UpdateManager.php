@@ -22,7 +22,7 @@ class UpdateManager extends AstManager{
 			list($column, $value) = $v;
 			$vals[] = new EqualExpression(
 				$column, 
-				new LitteralNode($value)
+				new LitteralNode($value, true)
 			);
 		}
 	

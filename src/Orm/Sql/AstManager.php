@@ -19,7 +19,7 @@ abstract class AstManager{
 		$this->visitor = $engine->getVisitor();
 	}
 	
-	public function toString(){
+	public function toSql(){
 		return $this->ast->accept($this->visitor);
 	}
 	
@@ -32,7 +32,7 @@ abstract class AstManager{
 	}
 	
 	public function __toString(){
-		return $this->toString();
+		return $this->toSql();
 	}
 	
 }
