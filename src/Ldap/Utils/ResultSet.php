@@ -95,7 +95,7 @@ class ResultSet implements \Iterator, \Countable{
 			$resource = $this->reader->getResource();
 			$this->current = @ldap_next_entry($resource, $this->current);
 			if ($this->current === false) {
-				$msg = $this->reader->getLastError($code);
+				//$msg = $this->reader->getLastError($code);
 				if ($code === LdapException::LDAP_SIZELIMIT_EXCEEDED) {
 					return;
 				} elseif ($code > LdapException::LDAP_SUCCESS) {

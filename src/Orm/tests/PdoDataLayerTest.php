@@ -17,13 +17,17 @@ class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 	
 	public function testRead(){
 		$layer = new PdoDataLayer($this->connection);
-		$engine = new ActiveRecord($layer);
+		$engine = new User($layer);
 		$users = Sql::table('users');
 		$select = $users->project('*');
 		$select->engine($engine);
-		print_r($layer->read($select));
+		//print_r($layer->read($select));
 		
 		$layer->close();
+	}
+	
+	public function testActiveRecord(){
+		$user = User::findAll();
 	}
 	
 }

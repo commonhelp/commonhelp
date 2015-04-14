@@ -20,11 +20,9 @@ class LdapDataLayerTest extends \PHPUnit_Framework_TestCase{
 	
 	public function testRead(){
 		$layer = new LdapDataLayer($this->options);
-		//(&(|(objectClass=sambaAccount)(objectClass=sambaSamAccount))(objectClass=posixAccount)(!(uid=*$)))
 		$filter = new AstFilterManager();
-		$filter->filter($filter['objectClass']->eq('posixAccount')
-				->also($filter['objectClass']->eq('sambaAccount')));
-		print_r($layer->read($filter));
+		$filter->filter($filter['uid']->eq('*'));
+		$results = $layer->read($filter);
 		
 		$layer->close();
 	}

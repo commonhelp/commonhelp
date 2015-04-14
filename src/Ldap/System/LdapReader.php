@@ -74,7 +74,7 @@ class LdapReader extends SubSystem{
 	
 	public function setAttribute($attr){
 		if(is_array($attr)){
-			array_merge($this->attributes, $attr);
+			$this->attributes = array_merge($this->attributes, $attr);
 		}else{
 			$this->attributes[] = $attr;
 		}
