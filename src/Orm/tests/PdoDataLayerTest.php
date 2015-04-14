@@ -2,6 +2,7 @@
 
 namespace Commonhelp\Orm;
 
+use Commonhelp\Orm\Sql\Sql;
 class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 	
 	protected $connection = array(
@@ -12,10 +13,17 @@ class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 	
 	public function testConnection(){
 		$connection = PdoDataLayer::instance($this->connection);
+	}
+	
+	public function testRead(){
+		$layer = new PdoDataLayer($this->connection);
+		$engine = new ActiveRecord($layer);
+		$users = Sql::table('users');
+		$select = $users->project('*');
+		$select->engine($engine);
+		print_r($layer->read($select));
 		
-		//print_r($connection);
+		$layer->close();
 	}
 	
 }
-	
-

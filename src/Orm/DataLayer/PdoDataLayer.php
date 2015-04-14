@@ -4,11 +4,15 @@ namespace Commonhelp\Orm;
 use Commonhelp\Orm\Exception\DataLayerException;
 
 use PDO;
+use PDOException;
+use Commonhelp\Util\Expression\AstManager;
+use Commonhelp\Orm\Sql\InsertManager;
 
 class PdoDataLayer extends DataLayerInterface{
 	
 	protected $pdo;
 	protected $adaptee;
+	
 	
 	public function __construct(array $options){
 		if(!isset($options['dsn'])){
@@ -49,11 +53,47 @@ class PdoDataLayer extends DataLayerInterface{
 	}
 	
 	public function quoteColumnName($string){
-		
+		return $this->adaptee->quoteColumnName($string);
 	}
 	
-	public function quoteTableName($strin){
+	public function quoteTableName($string){
+		return $this->adaptee->quoteTableName($string);
+	}
+	
+	public function read(AstManager $manager){
+		return $this->query($manager->toSql());
+	}
+	
+	public function write(AstManager $manager){
+		$this->query($manager->toSql());
+		if($manager instanceof InsertManager){
+			return $this->lastInsertId();
+		}else{
+			return true;
+		}
+	}
+	
+	public function close(){
+		static::$instance = null;
+	}
+	
+	protected function lastInsertId($name = null){
+		$this->pdo->lastInsertId($name);
+	}
+	
+	protected function query($sql){
+		$this->lastQuery = $sql;
+		$stmnt = $this->pdo->prepare($sql);
+		$stmnt->setFetchMode(PDO::FETCH_ASSOC);
+		try{
+			if(!$stmnt->execute()){
+				throw new DataLayerException("Error executing query: {$sql}");
+			}
+		}catch(PDOException $e){
+			throw new DataLayerException($e->getMessage());
+		}
 		
+		return $stmnt->fetchAll();
 	}
 	
 	protected function getDriver(){

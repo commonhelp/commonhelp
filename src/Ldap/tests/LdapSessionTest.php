@@ -20,7 +20,7 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 	protected $validDn = 'cn=admin,dc=unponteper,dc=it';
 	protected $invalidDn = 'cn=admin,dc=unponteper,dc';
 	
-	public function testConnection(){
+	/*public function testConnection(){
 		$session = new LdapSession($this->options);
 		$res = $session->getResource();
 		
@@ -29,9 +29,9 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 	
 	public function testValidDn(){
 		Dn::factory($this->validDn);
-	}
+	}*/
 	
-	public function testRead(){
+	/*public function testRead(){
 		// (&(|(objectClass=sambaAccount)(objectClass=sambaSamAccount))(objectClass=posixAccount)(!(uid=*$)))
 		// (&(|(A)(B))(C)(!(B))) -> (A | B) & (C) & (B) -> (A | B9) & ((C) & (!B))
 		 
@@ -51,58 +51,18 @@ class LdapSessionTest extends \PHPUnit_Framework_TestCase{
 			)
 		);
 		
+		
 		$filterStr = $filter->visit($expression);
 		$rs = $reader->search($session->getBaseDn(), '(&(|(objectClass=sambaAccount)(objectClass=sambaSamAccount))(objectClass=posixAccount)(!(uid=*$)))');
-		foreach($rs as $result){
-			print_r($result);
-			break;
-		}
-	}
-	
-	public function testFilterBase(){
-		$expected = "(|(objectClass=inetOrgPerson)(objectClass=user))";
-		$filter = new Filter();
 		
-		$expression = new OrExpression(
-			new FilterExpression('objectClass=inetOrgPerson'), 
-			new FilterExpression('objectClass=user')
-		);
-		
-		$parsed = $filter->visit($expression);
-		$this->assertEquals($expected, $parsed);
-	}
+	}*/
 	
 	public function testFilter(){
 		$expected = "(&(|(objectClass=inetOrgPerson)(objectClass=user))(userCertificate=*))";
-		$filter = new Filter();
+		$manager = new AstFilterManager();
 		
-		$expression = new AndExpression(
-				new OrExpression(
-					new FilterExpression('objectClass=inetOrgPerson'),
-					new FilterExpression('objectClass=user')
-				), 
-				new FilterExpression('userCertificate=*')
-		);
-		
-		$parsed = $filter->visit($expression);
-		$this->assertEquals($expected, $parsed);
-	}
-	
-	public function testFilterNot(){
-		$expected = "(&(objectClass=inetOrgPerson)(!(mail=*)))";
-		$filter = new Filter();
-		
-		$expression = new AndExpression(
-			new FilterExpression('objectClass=inetOrgPerson'),
-			new NotExpression(
-				new FilterExpression('mail=*')
-			)
-		);
-		
-		$parsed = $filter->visit($expression);
-		$this->assertEquals($expected, $parsed);
+		$manager->filter($manager['userCertificate']->eq('*')->otherwise($manager['objectClass']->eq('inetOrgPerson'))->also($manager['objectClass']->eq('user')));
+		$this->assertEquals('(&(|( userCertificate  =  * )( objectClass  =  inetOrgPerson ))( objectClass  =  user ))', $manager->toFilter());
 	}
 	
 }
-
-?>

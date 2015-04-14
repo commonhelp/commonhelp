@@ -4,9 +4,9 @@
         <!--<testsuite name="Ssh Test">
             <directory>src/Ssh/tests</directory>
         </testsuite>-->
-		<!--<testsuite name="Ldap Test">
+		<testsuite name="Ldap Test">
             <directory>src/Ldap/tests</directory>
-        </testsuite>-->
+        </testsuite>
 		<testsuite name="Expression test">
             <directory>src/Util/Expression/tests</directory>
         </testsuite>

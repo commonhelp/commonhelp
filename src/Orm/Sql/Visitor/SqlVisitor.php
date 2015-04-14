@@ -442,7 +442,6 @@ class SqlVisitor extends Visitor{
 		if(null === $this->connection){
 			return "\"{$name}\"";
 		}
-		
 		return $this->connection->quoteTableName($name);
 	}
 	

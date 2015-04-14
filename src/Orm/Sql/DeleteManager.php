@@ -2,7 +2,7 @@
 
 namespace Commonhelp\Orm\Sql;
 
-class DeleteManager extends AstManager{
+class DeleteManager extends AstSqlManager{
 
 	public function __construct(){
 		parent::__construct();

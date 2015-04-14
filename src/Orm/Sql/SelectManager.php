@@ -2,7 +2,7 @@
 
 namespace Commonhelp\Orm\Sql;
 
-class SelectManager extends AstManager{
+class SelectManager extends AstSqlManager{
 	
 	protected $core;
 	

@@ -2,13 +2,15 @@
 
 namespace Commonhelp\Orm;
 
+use Commonhelp\Util\Expression\AstManager;
 abstract class DataLayerInterface{
 	protected static $instance = false;
 	protected $visitor;
+	protected $lastQuery;
 	
 	public static function instance(array $options){
 		if(!static::$instance){
-			static::$instance = new LdapDataLayer($options);
+			static::$instance = new static($options);
 		}
 		
 		return static::$instance;
@@ -18,5 +20,9 @@ abstract class DataLayerInterface{
 		return $this->visitor;
 	}
 	
+	
+	
+	public abstract function read(AstManager $manager);
+	public abstract function write(AstManager $manager);
+	public abstract function close();
 }
-

@@ -49,6 +49,7 @@ class LdapReader extends SubSystem{
 	public function search($dn, $filter, $sort=null){
 		$dnStr = $this->checkDn($dn);
 		if(false === ($search = @ldap_search($this->getResource(), $dnStr, $filter, $this->attributes, $this->attrsOnly, $this->limit))){
+			print_r($filter);
 			throw new LdapException('errno:'.ldap_errno($this->getResource()).' error:'.ldap_error($this->getResource()));
 		}
 		if($this->sort !== null && is_string($this->sort)){

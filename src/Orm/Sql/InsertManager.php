@@ -2,7 +2,7 @@
 
 namespace Commonhelp\Orm\Sql;
 
-class InsertManager extends AstManager{
+class InsertManager extends AstSqlManager{
 	
 	public function __construct(){
 		parent::__construct();

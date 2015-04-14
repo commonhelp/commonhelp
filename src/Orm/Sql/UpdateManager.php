@@ -4,7 +4,7 @@ namespace Commonhelp\Orm\Sql;
 use Commonhelp\Util\Expression\Operator\EqualExpression;
 
 
-class UpdateManager extends AstManager{
+class UpdateManager extends AstSqlManager{
 	
 	public function __construct(){
 		parent::__construct();

@@ -3,7 +3,9 @@
 namespace Commonhelp\Orm\Sql;
 
 use Commonhelp\Orm\PdoDataLayer;
-abstract class AstManager{
+use Commonhelp\Util\Expression\AstManager;
+
+abstract class AstSqlManager implements AstManager{
 	
 	protected $visitor;
 	protected $ast;
@@ -14,7 +16,7 @@ abstract class AstManager{
 		$this->engine = null;
 	}
 	
-	public function engine(Mapper $engine){
+	public function engine($engine){
 		$this->engine = $engine;
 		$this->visitor = $engine->getVisitor();
 	}
