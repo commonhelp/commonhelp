@@ -3,7 +3,12 @@
 namespace Commonhelp\Orm;
 
 use Commonhelp\Orm\Sql\Sql;
+use Commonhelp\DI\Container;
+use Commonhelp\Config\ConfigServiceProvider;
 class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
+	
+	protected $config;
+	protected $layer;
 	
 	protected $connection = array(
 		'dsn'			=> 'mysql:host=localhost;dbname=test;charset=UTF8',
@@ -11,23 +16,31 @@ class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 		'password'		=> 'test'
 	);
 	
+	public function __construct(){
+		$this->layer = new PdoDataLayer($this->connection);
+	}
+	
 	public function testConnection(){
 		$connection = PdoDataLayer::instance($this->connection);
 	}
 	
-	public function testRead(){
-		$layer = new PdoDataLayer($this->connection);
-		$engine = new User($layer);
+	/*public function testRead(){
+		$locator = new Locator($this->layer);
+		$mapper = $locator->mapper('Entity\User');
 		$users = Sql::table('users');
 		$select = $users->project('*');
-		$select->engine($engine);
-		//print_r($layer->read($select));
+		$select->engine($mapper);
+		print_r($this->layer->read($select));
 		
-		$layer->close();
+		$this->layer->close();
 	}
 	
-	public function testActiveRecord(){
-		$user = User::findAll();
-	}
+	public function testMapper(){
+		$locator = new Locator($this->layer);
+		$mapper = $locator->mapper('Entity\User');
+		$users = $mapper->findById();
+		$users = $mapper->findAll();
+		$users = $mapper->findAllByUserName();
+	}*/
 	
 }

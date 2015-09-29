@@ -2,16 +2,14 @@
 
 namespace Commonhelp\Orm;
 
-abstract class Mapper{
+interface Mapper{
 	
-	protected $layer;
+	function create();
 	
-	public function __construct(DataLayerInterface $layer){
-		$this->layer = $layer;
-	}
+	function read();
 	
-	public function getVisitor(){
-		return $this->layer->getVisitor();
-	}
-}
+	function update();
+	
+	function delete();
 
+}

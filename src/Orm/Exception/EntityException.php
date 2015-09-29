@@ -3,6 +3,6 @@
 namespace Commonhelp\Orm\Exception;
 
 
-class ActiveRecordException extends \Exception{
+class EntityException extends \Exception{
  
 }
