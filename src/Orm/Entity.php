@@ -26,12 +26,12 @@ abstract class Entity{
 		$instance = new static();
 		
 		foreach($row as $key => $value){
-			$prop = ucfirst($this->classify($key));
+			$prop = ucfirst(Inflector::classify($key));
 			$setter = 'set'.$prop;
 			$instance->$setter($value);
 		}
 		
-		$this->resetUpdatedFields();
+		$instance->resetUpdatedFields();
 		
 		return $instance;
 	}

@@ -4,7 +4,7 @@ namespace Commonhelp\Orm;
 
 use Commonhelp\Orm\Exception\DataMapperException;
 use Commonhelp\Util\Inflector;
-class PdoDataMapper implements Mapper{
+abstract class PdoDataMapper implements Mapper{
 	
 	protected $layer;
 	protected $locator;
@@ -12,10 +12,13 @@ class PdoDataMapper implements Mapper{
 	
 	protected $queryManager;
 	
-	public function __construct(Locator $locator, $entityName){
-		$this->layer = $locator->getLayer();
-		$this->locator = $locator;
-		$this->entityName = $entityName; 
+	public function __construct(PdoDataLayer $layer, $entityName=null){
+		$this->layer = $layer;
+		if(!is_null($entityName)){
+			$this->entityName = $entityName;
+		}else{
+			$this->entityName = str_replace('Mapper', '', get_class($this));
+		} 
 	}
 	
 	public function __call($name, $arguments){

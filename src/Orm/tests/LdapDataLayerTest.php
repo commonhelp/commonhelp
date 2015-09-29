@@ -32,11 +32,10 @@ class LdapDataLayerTest extends \PHPUnit_Framework_TestCase{
 	}
 	
 	public function testOdm(){
-		$locator = new Locator($this->layer);
-		$mapper = $locator->mapper('Entity\User');
+		$userMapper = new \Test\Db\UserMapper($this->layer);
 		$filter = new AstFilterManager();
 		$filter->filter($filter['uid']->eq('*'));
-		$users = $mapper->find($filter);
+		print_r($userMapper->find($filter));
 	}
 	
 }
