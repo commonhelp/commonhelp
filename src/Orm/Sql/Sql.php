@@ -3,6 +3,7 @@
 namespace Commonhelp\Orm\Sql;
 
 use Commonhelp\Orm\PdoDataLayer;
+use Commonhelp\Util\Inflector;
 class Sql implements \ArrayAccess{
 	
 	protected $table;
@@ -103,6 +104,84 @@ class Sql implements \ArrayAccess{
 	
 	public function __toString(){
 		return $this->toString();
+	}
+	
+	public function buildSelect(array $criteria, $orderby, $limit, $offset){
+		$select = $this->project('*');
+		$select->where($this->criteriaToConditions($criteria));
+	
+		if(!is_null($orderby)){
+			foreach($orderby as $field => $value){
+				$field = Inflector::underscore($field);
+				if($value == 'ASC'){
+					$orders[] = $this[$field]->asc($value);
+				}else if($value == 'DESC'){
+					$orders[] = $this[$field]->desc($value);
+				}else{
+					throw new SqlException("{$value} is not a valid operation for ordering");
+				}
+			}
+			
+			call_user_func_array(array($select, 'order'), $order);
+		}
+	
+		if(!is_null($limit)){
+			$select->take($limit);
+		}
+	
+		if(!is_null($offset)){
+			$select->skip($offset);
+		}
+		
+		return $select;
+	}
+	
+	public function buildInsert(array $map){
+		$insert = new InsertManager();
+		$mapToInsert = $this->mapToStmnt($map);
+		$insert->insert($mapToInsert);
+		
+		return $insert;
+	}
+	
+	public function buildDelete($criteria, $limit){
+		$delete = new DeleteManager();
+		$delete->from($this);
+		$delete->where($this->criteriaToConditions($criteria));
+		if(!is_null($limit)){
+			$delete->take($limit);
+		}
+		
+		return $delete;
+	}
+	
+	public function buildUpdate(array $map, array $criteria){
+		$update = new UpdateManager();
+		$update->table($this);
+		$mapToUpdate = $this->mapToStmnt($map);
+		$update->set($mapToUpdate);
+		$update->where($this->criteriaToConditions($criteria));
+		return $update;
+	}
+	
+	private function mapToStmnt($map){
+		$mapTo = array();
+		foreach($map as $field => $value){
+			$field = Inflector::underscore($field);
+			$mapTo[] = array($this[$field], $value);
+		}
+		
+		return $mapTo;
+	}
+	
+	private function criteriaToConditions($criteria){
+		$conditions = array();
+		foreach($criteria as $field => $value){
+			$field = Inflector::underscore($field);
+			$conditions[] = $this[$field]->eq($value);
+		}
+		
+		return $conditions;
 	}
 	
 }

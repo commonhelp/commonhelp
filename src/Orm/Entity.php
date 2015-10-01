@@ -40,7 +40,7 @@ abstract class Entity{
 	
 	protected function getter($name){
 		if(property_exists($this, $name)){
-			return $this->name;
+			return $this->$name;
 		}else{
 			throw new EntityException($name.' is not a valid attribute');
 		}

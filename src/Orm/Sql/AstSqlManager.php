@@ -7,6 +7,9 @@ use Commonhelp\Util\Expression\AstManager;
 
 abstract class AstSqlManager implements AstManager{
 	
+	const UNION = 0;
+	const INTERSECT = 1;
+	
 	protected $visitor;
 	protected $ast;
 	protected $engine;
@@ -35,6 +38,21 @@ abstract class AstSqlManager implements AstManager{
 	
 	public function __toString(){
 		return $this->toSql();
+	}
+	
+	protected function mergeExpression(array $expression, $op){
+		if(count($expression) == 1){
+			return $expression[0];
+		}
+		
+		$left = array_shift($expression);
+		$right = array_shift($expression);
+		if($op == self::INTERSECT){
+			array_unshift($expression, $left->also($right));
+		}else if($op == self::UNION){
+			array_unshift($expression, $left->otherwise($right));
+		}
+		return $this->mergeExpression($expression, $op);
 	}
 	
 }

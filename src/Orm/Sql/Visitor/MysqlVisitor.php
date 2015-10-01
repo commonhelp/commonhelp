@@ -32,7 +32,7 @@ class MysqlVisitor extends SqlVisitor{
 		if(isset($n['values'])){
 			$vals = array();
 			foreach($n['values'] as $value){
-				$opVisit = new SqlOperatorVisitor();
+				$opVisit = new SqlOperatorVisitor($this);
 				$vals[] = $value->accept($opVisit);
 			}
 			$values = " SET ".implode(', ', $vals);

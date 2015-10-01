@@ -6,5 +6,6 @@ class User extends Entity{
 	
 	protected $firstName;
 	protected $lastName;
+	protected $email;
 	
 }

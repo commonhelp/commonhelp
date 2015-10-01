@@ -49,7 +49,10 @@ class UpdateManager extends AstSqlManager{
 		return $this;
 	}
 	
-	public function where($expression){
+	public function where($expression, $op=self::INTERSECT){
+		if(is_array($expression)){
+			$expression = $this->mergeExpression($expression, $op);
+		}
 		$this->ast['wheres'] = new WhereNode($expression);
 	
 		return $this;
