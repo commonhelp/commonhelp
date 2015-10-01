@@ -24,23 +24,20 @@ class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 		$connection = PdoDataLayer::instance($this->connection);
 	}
 	
-	/*public function testRead(){
-		$locator = new Locator($this->layer);
-		$mapper = $locator->mapper('Entity\User');
+	public function testRead(){
+		$userMapper = new \Test\Pdo\UserMapper($this->layer);
 		$users = Sql::table('users');
 		$select = $users->project('*');
-		$select->engine($mapper);
-		print_r($this->layer->read($select));
+		$select->engine($userMapper);
+		$this->layer->read($select);
 		
 		$this->layer->close();
 	}
 	
 	public function testMapper(){
-		$locator = new Locator($this->layer);
-		$mapper = $locator->mapper('Entity\User');
-		$users = $mapper->findById();
-		$users = $mapper->findAll();
-		$users = $mapper->findAllByUserName();
-	}*/
+		$userMapper = new \Test\Pdo\UserMapper($this->layer);
+		$user = $userMapper->findBy(array('firstName' => 'Marco', 'lastName' => 'Trognoni', 'id' => 2));
+		print_r($user);
+	}
 	
 }

@@ -12,12 +12,8 @@ class Sql implements \ArrayAccess{
 		$this->table = $table;
 	}
 	
-	public static function table($table, $engine=null){
-		return new static($table, $engine);
-	}
-	
-	public function getEngine(){
-		return $this->engine;
+	public static function table($table){
+		return new static($table);
 	}
 	
 	public function getTable(){

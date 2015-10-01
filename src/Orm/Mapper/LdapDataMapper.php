@@ -4,7 +4,7 @@ namespace Commonhelp\Orm;
 
 use Commonhelp\Ldap\AstFilterManager;
 
-abstract class LdapDataMapper implements Mapper{
+abstract class LdapDataMapper extends Mapper{
 	
 	protected $layer;
 	protected $entityName;
@@ -24,34 +24,28 @@ abstract class LdapDataMapper implements Mapper{
 		return $this->layer->getVisitor();
 	}
 	
-	public function create(){
+	public function create(Entity $entity){
 		$args = $this->parseArgs(func_get_args());
 	}
 	
 	public function find(AstFilterManager $filter){
 		$rows = $this->layer->read($filter);
-		$entities = [];
-		foreach($rows as $key => $row){
-			$entities[] = $this->mapRowToEntity($row);
+		$results = $this->getEntities($rows);
+		if(count($results) < 2){
+			return $results[0];
 		}
 		
-		return $entities;
+		return $results;
 	}
 	
 	public function read(){
 		return $this->find(func_get_args());
 	}
 	
-	public function update(){
-		$args = $this->parseArgs(func_get_args());
+	public function update(Entity $entity){
 	}
 	
-	public function delete(){
-		$args = $this->parseArgs(func_get_args());
-	}
-	
-	protected function mapRowToEntity($row){
-		return call_user_func($this->entityName .'::fromRow', $row);
+	public function delete(Entity $entity){
 	}
 	
 }

@@ -23,7 +23,7 @@ class LdapDataLayerTest extends \PHPUnit_Framework_TestCase{
 		$connection = LdapDataLayer::instance($this->options);
 	} 
 	
-	public function testRead(){
+/*	public function testRead(){
 		$filter = new AstFilterManager();
 		$filter->filter($filter['uid']->eq('*'));
 		$results = $this->layer->read($filter);
@@ -31,13 +31,13 @@ class LdapDataLayerTest extends \PHPUnit_Framework_TestCase{
 		$this->layer->close();
 	}
 	
-	public function testOdm(){
-		$userMapper = new \Test\Db\UserMapper($this->layer);
+	public function testLdapMapper(){
+		$userMapper = new \Test\Ldap\UserMapper($this->layer);
 		$filter = new AstFilterManager();
 		$filter->filter($filter['uid']->eq('*'));
-		print_r($userMapper->find($filter));
+		$userMapper->find($filter);
 	}
-	
+*/	
 }
 	
 

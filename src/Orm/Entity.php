@@ -11,6 +11,8 @@ abstract class Entity{
 	private $fieldTypes = array('id' => 'integer');
 	private $updatedFields = array();
 	
+	protected $fieldMap = array();
+	
 	public static function fromParams(array $params){
 		$instance = new static();
 		
@@ -45,6 +47,7 @@ abstract class Entity{
 	}
 	
 	protected function setter($name, $args){
+		$name = $this->mapToName($name);
 		if(property_exists($this, $name)){
 			if($this->$name === $args[0]){
 				return;
@@ -94,6 +97,14 @@ abstract class Entity{
 	
 	protected function addType($fieldName, $type){
 		$this->fieldTypes[$fieldName] = $type;
+	}
+	
+	private function mapToName($name){
+		if(isset($this->fieldMap[$name])){
+			return $this->fieldMap[$name];
+		}
+		
+		return $name;
 	}
 	
 }

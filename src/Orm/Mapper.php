@@ -2,14 +2,31 @@
 
 namespace Commonhelp\Orm;
 
-interface Mapper{
+abstract class Mapper{
 	
-	function create();
+	abstract public function create(Entity $entity);
 	
-	function read();
+	abstract public function read();
 	
-	function update();
+	abstract public function update(Entity $entity);
 	
-	function delete();
+	abstract public function delete(Entity $entity);
+	
+	protected function mapRowToEntity($row){
+		return call_user_func($this->entityName .'::fromRow', $row);
+	}
+	
+	protected function getEntities(array $rows){
+		$entities = [];
+		foreach($rows as $key => $row){
+			$entities[] = $this->mapRowToEntity($row);
+		}
+	
+		return $entities;
+	}
+	
+	protected function getEntity($row){
+		return $this->mapRowToEntity($row[0]);
+	}
 
 }

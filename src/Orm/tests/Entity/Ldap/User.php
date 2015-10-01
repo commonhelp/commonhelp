@@ -1,5 +1,5 @@
 <?php
-namespace Test\Db;
+namespace Test\Ldap;
 
 use Commonhelp\Orm\Entity;
 class User extends Entity{
@@ -34,5 +34,9 @@ class User extends Entity{
 	protected $displayName;
 	protected $givenName;
 	protected $mail;
+	
+	public function __construct(){
+		$this->fieldMap['uidNumber'] = 'id';
+	}
 	
 }

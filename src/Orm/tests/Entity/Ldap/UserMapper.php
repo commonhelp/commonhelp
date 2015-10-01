@@ -1,5 +1,5 @@
 <?php
-namespace Test\Db;
+namespace Test\Ldap;
 
 use Commonhelp\Orm\LdapDataMapper;
 
