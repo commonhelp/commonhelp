@@ -5,6 +5,7 @@ use Commonhelp\Orm\Exception\DataLayerException;
 
 use PDO;
 use PDOException;
+use Closure;
 use Commonhelp\Util\Expression\AstManager;
 use Commonhelp\Orm\Sql\InsertManager;
 
@@ -12,6 +13,10 @@ class PdoDataLayer extends DataLayerInterface{
 	
 	protected $pdo;
 	protected $adaptee;
+	
+	protected $username;
+	protected $password;
+	protected $dsn;
 	
 	
 	public function __construct(array $options){
@@ -24,16 +29,11 @@ class PdoDataLayer extends DataLayerInterface{
 		if(!isset($options['password'])){
 			$options['password'] = '';
 		}
-		$this->pdo = new PDO($options['dsn'], $options['username'], $options['password']);
 		
-		/**
-		 * MUST USE FULL NAMESPACE
-		 *@see http://stackoverflow.com/questions/18337650/how-to-check-the-existence-of-a-namespace-in-php
-		 */
-		$adaptee = "Commonhelp\\Orm\\".ucfirst($this->getDriver().'DataAdaptee');
-		$visitor = "Commonhelp\\Orm\\Sql\\".ucfirst($this->getDriver().'Visitor');
-		$this->adaptee = new $adaptee();
-		$this->visitor = new $visitor($this);
+		$this->username = $options['username'];
+		$this->password = $options['password'];
+		$this->dsn = $options['dsn'];
+		
 	}
 	
 	public static function instance(array $options){
@@ -42,6 +42,18 @@ class PdoDataLayer extends DataLayerInterface{
 		}
 		
 		return static::$instance;
+	}
+	
+	public function connect(){
+		$this->pdo = new PDO($this->dsn, $this->username, $this->password);
+		/**
+		 * MUST USE FULL NAMESPACE
+		 *@see http://stackoverflow.com/questions/18337650/how-to-check-the-existence-of-a-namespace-in-php
+		 */
+		$adaptee = "Commonhelp\\Orm\\".ucfirst($this->getDriver().'DataAdaptee');
+		$visitor = "Commonhelp\\Orm\\Sql\\".ucfirst($this->getDriver().'Visitor');
+		$this->adaptee = new $adaptee();
+		$this->visitor = new $visitor($this);
 	}
 	
 	public static function getAvailableDriver(){
@@ -74,7 +86,25 @@ class PdoDataLayer extends DataLayerInterface{
 	}
 	
 	public function close(){
-		static::$instance = null;
+		$this->pdo = null;
+		$this->adaptee = null;
+		$this->visitor = null;
+	}
+	
+	public function beginTransaction(){
+		
+	}
+	
+	public function commit(){
+		
+	}
+	
+	public function rollback(){
+		
+	}
+	
+	public function transactional(Closure $func){
+		
 	}
 	
 	protected function lastInsertId($name = null){

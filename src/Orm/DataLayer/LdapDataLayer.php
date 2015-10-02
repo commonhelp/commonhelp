@@ -8,7 +8,6 @@ use Commonhelp\Ldap\LdapWriter;
 use Commonhelp\Util\Expression\AstManager;
 use Commonhelp\Ldap\AstFilterManager;
 use Commonhelp\Orm\Exception\DataLayerException;
-use Commonhelp\Orm\Exception\Commonhelp\Orm\Exception;
 
 
 class LdapDataLayer extends DataLayerInterface{
@@ -20,14 +19,25 @@ class LdapDataLayer extends DataLayerInterface{
 	protected $writer;
 	protected $session;
 	
+	protected $options;
+	
 	
 	public function __construct(array $options){
-		$this->session = new LdapSession($options);
+		$this->options = $options;
+		$this->reader = null;
+		$this->writer = null;
+	}
+	
+	public function connect(){
+		$this->session = new LdapSession($this->options);
 		$this->reader = $this->session->getReader();
 		$this->writer = $this->session->getWriter();
 	}
 	
 	public function read(AstManager $manager){
+		if(is_null($this->reader)){
+			throw new DataLayerException('No ldap connection');
+		}
 		$records = array();
 		if(!($manager instanceof AstFilterManager)){
 			throw new DataLayerException('Bad manager filter');
@@ -54,11 +64,15 @@ class LdapDataLayer extends DataLayerInterface{
 	}
 	
 	public function write(AstManager $manager){
+		if(is_null($this->writer)){
+			throw new DataLayerException('No ldap connection');
+		}
 		throw new DataLayerException('Not implemented yet');
 	}
 	
 	public function close(){
-		static::$instance = null;
+		$this->session->disconnect();
+		$this->session = null;
 	}
 	
 	protected function clean($str){

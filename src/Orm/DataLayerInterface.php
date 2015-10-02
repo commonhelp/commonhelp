@@ -21,7 +21,7 @@ abstract class DataLayerInterface{
 	}
 	
 	
-	
+	public abstract function connect();
 	public abstract function read(AstManager $manager);
 	public abstract function write(AstManager $manager);
 	public abstract function close();

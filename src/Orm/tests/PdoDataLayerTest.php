@@ -25,6 +25,7 @@ class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 	}
 	
 	public function testRead(){
+		$this->layer->connect();
 		$userMapper = new \Test\Pdo\UserMapper($this->layer);
 		$users = Sql::table('users');
 		$select = $users->project('*');
@@ -35,24 +36,28 @@ class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 	}
 	
 	public function testFind(){
+		$this->layer->connect();
 		$userMapper = new \Test\Pdo\UserMapper($this->layer);
 		$user = $userMapper->findBy(array('firstName' => 'Marco', 'lastName' => 'Trognoni'));
 		$userTest = \Test\Pdo\User::fromRow(array('id'=>1, 'firstName' => 'Marco', 'lastName' => 'Trognoni'));
 		
 		$this->assertEquals($userTest, $user);
+		$this->layer->close();
 	}
 	
 	public function testInsert(){
+		$this->layer->connect();
 		$userMapper = new \Test\Pdo\UserMapper($this->layer);
 		$user = new \Test\Pdo\User();
 		$user->setFirstName('Luca');
 		$user->setLastName('Trognoni');
 		
 		//$userMapper->create($user);
-		
+		$this->layer->close();
 	}
 	
 	public function testUpdate(){
+		$this->layer->connect();
 		$userMapper = new \Test\Pdo\UserMapper($this->layer);
 		$user = $userMapper->findBy(array('firstName' => 'Luca', 'lastName' => 'Trognoni'));
 		if(!is_null($user)){
@@ -61,14 +66,17 @@ class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 		}
 		
 		//$userMapper->update($user);
+		$this->layer->close();
 	}
 	
 	public function testDelete(){
+		$this->layer->connect();
 		$userMapper = new \Test\Pdo\UserMapper($this->layer);
 		$user = $userMapper->findBy(array('firstName' => 'Luca', 'lastName' => 'Trognoni-Visco'));
 		if(!is_null($user)){
 			//$userMapper->delete($user);
 		}
+		$this->layer->close();
 	}
 	
 }

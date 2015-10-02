@@ -8,7 +8,7 @@ class EntityManager{
 	
 	public function __construct(DataLayerInterface $connection){
 		$this->connection = $connection;
-		$this->unitOfWork = new UnitOfWork();
+		$this->unitOfWork = new UnitOfWork($this);
 	}
 	
 	public function getConnection(){
@@ -16,7 +16,7 @@ class EntityManager{
 	}
 	
 	public function getUnitOfWork(){
-		
+		return $this->unitOfWork;
 	}
 	
 	public function persist(Entity $entity){

@@ -17,6 +17,11 @@ class LdapDataLayerTest extends \PHPUnit_Framework_TestCase{
 	
 	public function __construct(){
 		$this->layer = new LdapDataLayer($this->options);
+		$this->layer->connect();
+	}
+	
+	public function __destruct(){
+		$this->layer->close();
 	}
 	
 	public function testConnection(){
