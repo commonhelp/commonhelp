@@ -21,4 +21,6 @@ nbproject/
 
 #Eclipse
 .settings
-.project
+.project/
+.buildpath
+..buildpath*
