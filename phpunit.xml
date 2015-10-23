@@ -17,7 +17,7 @@
 			<directory>src/Orm/Sql/tests</directory>
 		</testsuite>-->
 		<testsuite name="Rss test">
-			<directory>src/Rss/tests</directory>
+			<directory>./src/Commonhelp/Rss/tests</directory>
 		</testsuite>
     </testsuites>
 </phpunit>
