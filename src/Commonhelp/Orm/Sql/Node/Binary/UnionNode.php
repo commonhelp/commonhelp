@@ -1,6 +1,8 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node\Binary;
+
+use Commonhelp\Orm\Sql\Node\BinaryNode;
 
 class UnionNode extends BinaryNode{
 	protected $op;

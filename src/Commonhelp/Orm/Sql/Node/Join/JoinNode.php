@@ -1,6 +1,9 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node\Join;
+
+use Commonhelp\Orm\Sql\Node\JoinNode;
+use Commonhelp\Orm\Sql\Sql;
 
 abstract class JoinNode extends BinaryNode{
 	

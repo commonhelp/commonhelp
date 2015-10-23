@@ -3,6 +3,7 @@
 namespace Commonhelp\Orm;
 
 use Commonhelp\Util\Expression\AstManager;
+
 abstract class DataLayerInterface{
 	protected static $instance = false;
 	protected $visitor;

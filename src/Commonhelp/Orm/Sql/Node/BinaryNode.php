@@ -1,8 +1,7 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node;
 
-use Commonhelp\Util\Expression\Visitor;
 class BinaryNode extends Node{
 	
 	

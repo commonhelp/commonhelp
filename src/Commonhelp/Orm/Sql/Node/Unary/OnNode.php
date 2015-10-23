@@ -1,9 +1,8 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node\Unary;
 
-
-
+use Commonhelp\Orm\Sql\Node\UnaryNode;
 use Commonhelp\Util\Expression\Expression;
 class OnNode extends UnaryNode{
 	

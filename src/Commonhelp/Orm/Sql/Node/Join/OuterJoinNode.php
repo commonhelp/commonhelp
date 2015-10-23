@@ -1,6 +1,8 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node\Join;
+
+use Commonhelp\Orm\Sql\Node\JoinNode;
 
 class OuterJoinNode extends JoinNode{
 	

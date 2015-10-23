@@ -1,7 +1,8 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node\Unary;
 
+use Commonhelp\Orm\Sql\Node\UnaryNode;
 use Commonhelp\Orm\Exception\SqlException;
 use Commonhelp\Util\Expression\Operator\OperatorExpression;
 

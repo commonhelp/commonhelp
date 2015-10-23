@@ -1,6 +1,8 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node\Binary;
+
+use Commonhelp\Orm\Sql\Node\LitteralNode;
 
 class AsNode extends BinaryNode{
 	

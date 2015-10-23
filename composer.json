@@ -7,7 +7,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Marco Trognoni",
+            "name": "Marco 'Marcoski' Trognoni",
             "email": "mtrognon@commonhelp.it",
             "homepage": "http://www.commonhelp.it",
             "role": "Developer"
@@ -24,5 +24,6 @@
     	"psr-4": {
     		"Commonhelp\\": "src/Commonhelp"
     	}
-    }
+    },
+    "minimum-stability": "dev"
 }

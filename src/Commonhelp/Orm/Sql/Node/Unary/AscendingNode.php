@@ -1,7 +1,8 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node\Unary;
 
+use Commonhelp\Orm\Sql\Node\UnaryNode;
 
 
 class AscendingNode extends UnaryNode{

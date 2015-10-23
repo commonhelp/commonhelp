@@ -1,6 +1,6 @@
 <?php
 
-namespace Commonhelp\Orm;
+namespace Commonhelp\Orm\Mapper;
 
 use Commonhelp\Orm\Exception\DataMapperException;
 use Commonhelp\Util\Inflector;
@@ -8,6 +8,7 @@ use Commonhelp\Orm\Sql\SelectManager;
 use Commonhelp\Orm\Sql\Sql;
 use Commonhelp\Orm\Sql\DeleteManager;
 use Commonhelp\Orm\Exception\Commonhelp\Orm\Exception;
+use Commonhelp\Orm\DataLayer\PdoDataLayer;
 
 abstract class PdoDataMapper extends Mapper{
 	

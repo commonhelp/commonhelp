@@ -1,9 +1,11 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node\Binary;
 
+use Commonhelp\Orm\Sql\Node\LitteralNode;
 use Commonhelp\Util\Expression\Operator\OperatorVisitor;
 use Commonhelp\Util\Expression\Operator\SymbolExpression;
+
 class EqualNode extends SymbolExpression{
 	
 	public function __construct(LitteralNode $left, LitteralNode $right){

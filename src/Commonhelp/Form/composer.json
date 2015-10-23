@@ -1,0 +1,19 @@
+{
+    "name": "commonhelp/form",
+    "description": "HTML Form builder library",
+    "type": "library",
+    "require": {
+        "php": ">=5.3.2",
+        "commonhelp/event": ""
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marco 'Marcoski' Trognoni",
+            "email": "mtrognon@commonhelp.it",
+            "homepage": "http://www.commonhelp.it",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev"
+}

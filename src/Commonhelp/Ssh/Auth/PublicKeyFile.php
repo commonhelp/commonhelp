@@ -1,7 +1,7 @@
 <?php
-namespace Commonhelp\Ssh;
+namespace Commonhelp\Ssh\Auth;
 
-use Commonhelp\Authentication\Auth;
+use Commonhelp\Resource\Auth;
 
 class PublicKeyFile implements Auth{
 	

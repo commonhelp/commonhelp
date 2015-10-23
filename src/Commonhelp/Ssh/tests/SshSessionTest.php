@@ -1,7 +1,7 @@
 <?php
 namespace Commonhelp\Ssh;
 
-use Commonhelp\Authentication\Password;
+use Commonhelp\Ssh\Auth\Password;
 class SshSessionTest extends \PHPUnit_Framework_TestCase{
 	
 	protected $configuration = array(

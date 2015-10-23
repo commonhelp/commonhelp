@@ -1,8 +1,9 @@
 <?php
 
-namespace Commonhelp\Orm;
+namespace Commonhelp\Orm\Mapper;
 
-use Commonhelp\Ldap\AstFilterManager;
+use Commonhelp\Ldap\Utils\AstFilterManager;
+use Commonhelp\Orm\DataLayer\LdapDataLayer;
 
 abstract class LdapDataMapper extends Mapper{
 	

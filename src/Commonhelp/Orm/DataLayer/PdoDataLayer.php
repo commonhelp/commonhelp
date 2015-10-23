@@ -1,6 +1,6 @@
 <?php
 
-namespace Commonhelp\Orm;
+namespace Commonhelp\Orm\DataLayer;
 use Commonhelp\Orm\Exception\DataLayerException;
 
 use PDO;
@@ -50,8 +50,8 @@ class PdoDataLayer extends DataLayerInterface{
 		 * MUST USE FULL NAMESPACE
 		 *@see http://stackoverflow.com/questions/18337650/how-to-check-the-existence-of-a-namespace-in-php
 		 */
-		$adaptee = "Commonhelp\\Orm\\".ucfirst($this->getDriver().'DataAdaptee');
-		$visitor = "Commonhelp\\Orm\\Sql\\".ucfirst($this->getDriver().'Visitor');
+		$adaptee = "Commonhelp\\Orm\\DataAdaptee\\".ucfirst($this->getDriver().'DataAdaptee');
+		$visitor = "Commonhelp\\Orm\\Sql\\Visitor\\".ucfirst($this->getDriver().'Visitor');
 		$this->adaptee = new $adaptee();
 		$this->visitor = new $visitor($this);
 	}

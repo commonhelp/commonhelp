@@ -1,6 +1,6 @@
 <?php
 
-namespace Commonhelp\Authentication;
+namespace Commonhelp\Resource;
 
 interface Auth{
 	

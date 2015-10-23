@@ -1,5 +1,5 @@
 <?php
-namespace Commonhelp\Ssh;
+namespace Commonhelp\Ssh\System;
 
 use Commonhelp\Resource\SubSystem;
 

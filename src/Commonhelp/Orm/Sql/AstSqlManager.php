@@ -2,7 +2,6 @@
 
 namespace Commonhelp\Orm\Sql;
 
-use Commonhelp\Orm\PdoDataLayer;
 use Commonhelp\Util\Expression\AstManager;
 
 abstract class AstSqlManager implements AstManager{

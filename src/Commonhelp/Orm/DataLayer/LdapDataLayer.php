@@ -1,12 +1,12 @@
 <?php
 
-namespace Commonhelp\Orm;
+namespace Commonhelp\Orm\DataLayer;
 
 use Commonhelp\Ldap\LdapSession;
 use Commonhelp\Ldap\LdapReader;
 use Commonhelp\Ldap\LdapWriter;
 use Commonhelp\Util\Expression\AstManager;
-use Commonhelp\Ldap\AstFilterManager;
+use Commonhelp\Ldap\Utils\AstFilterManager;
 use Commonhelp\Orm\Exception\DataLayerException;
 
 

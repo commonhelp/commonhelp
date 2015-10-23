@@ -6,7 +6,7 @@ use Commonhelp\Resource\AbstractResource;
 use Commonhelp\Ssh\System\Exec;
 use Commonhelp\Ssh\System\Sftp;
 use Commonhelp\Ssh\System\PublicKey;
-use Commonhelp\Authentication\Auth;
+use Commonhelp\Resource\Auth;
 
 class SshSession extends AbstractResource implements Session{
 	protected $configuration;
