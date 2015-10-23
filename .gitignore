@@ -18,3 +18,7 @@ Thumbs.db
 
 #Netbeans
 nbproject/
+
+#Eclipse
+.settings
+.project

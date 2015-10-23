@@ -4,6 +4,7 @@ namespace Commonhelp\Rss\Filter;
 
 use DOMXpath;
 use Commonhelp\Rss\Parser\XmlParser;
+use Commonhelp\Rss\RssConfig;
 
 /**
  * Tag Filter class.
@@ -67,6 +68,12 @@ class Tag{
         'iframe',
         'q',
     );
+    
+    private $config;
+    
+    public function __construct(RssConfig $config){
+    	$this->config = $config;
+    }
 
     /**
      * Check if the tag is allowed and is not a pixel tracker.
@@ -122,7 +129,10 @@ class Tag{
      * @return bool
      */
     public function isAllowedTag($tag){
-        return in_array($tag, $this->tagWhitelist);
+        return in_array($tag, array_merge(
+            $this->tagWhitelist,
+            array_keys($this->config->getFilterWhitelistedTags(array()))
+        ));
     }
 
     /**

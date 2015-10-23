@@ -9,6 +9,7 @@ use Commonhelp\Client\Url;
 use Commonhelp\Rss\Parser\XmlParser;
 use Commonhelp\Rss\Exception\UnsupportedFeedFormatException;
 use Commonhelp\Rss\Exception\SubscriptionNotFoundException;
+use Commonhelp\Rss\RssConfig;
 
 /**
  * Reader class.
@@ -28,6 +29,12 @@ class Reader{
         'Rss10' => '//rdf',
     );
 
+    
+    private $config;
+    
+    public function __construct(RssConfig $config = null){
+    	$this->config = $config ?: new RssConfig();
+    }
    
 
     /**
@@ -45,6 +52,7 @@ class Reader{
         $url = $this->prependScheme($url);
 
         return Client::getInstance()
+       					->setConfig($this->config)
                         ->setLastModified($lastModified)
                         ->setEtag($etag)
                         ->setUsername($username)
@@ -137,7 +145,10 @@ class Reader{
         $className = '\Commonhelp\Rss\Parser\\'.$format;
 
         $parser = new $className($content, $encoding, $url);
-
+        $parser->setHashAlgo($this->config->getParserHashAlgo());
+        $parser->setTimezone($this->config->getTimezone());
+        $parser->setConfig($this->config);
+        
         return $parser;
     }
 

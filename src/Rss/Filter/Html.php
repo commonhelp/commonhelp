@@ -6,6 +6,7 @@ namespace Commonhelp\Rss\Filter;
 use Commonhelp\Client\Url;
 use Commonhelp\Rss\Scraper\RuleLoader;
 use Commonhelp\Rss\Parser\XmlParser;
+use Commonhelp\Rss\RssConfig;
 
 /**
  * HTML Filter class.
@@ -62,6 +63,8 @@ class Html{
      * @var string
      */
     private $website;
+    
+    private $config;
 
     /**
      * Initialize the filter, all inputs data must be encoded in UTF-8 before.
@@ -70,11 +73,39 @@ class Html{
      * @param string $website Site URL (used to build absolute URL)
      */
     public function __construct($html, $website){
+    	$this->config = new RssConfig();
         $this->input = XmlParser::htmlToXml($html);
         $this->output = '';
         $this->tag = new Tag($this->config);
         $this->website = $website;
         $this->attribute = new Attribute(new Url($website));
+    }
+    
+    /**
+     * Set config object.
+     *
+     * @param \Commonhelp\Config\Config $config Config instance
+     *
+     * @return \Commonhelp\Rss\Filter\Html
+     */
+    public function setConfig($config)
+    {
+    	$this->config = $config;
+    	if ($this->config !== null) {
+    		$this->attribute->setImageProxyCallback($this->config->getFilterImageProxyCallback());
+    		$this->attribute->setImageProxyUrl($this->config->getFilterImageProxyUrl());
+    		$this->attribute->setImageProxyProtocol($this->config->getFilterImageProxyProtocol());
+    		$this->attribute->setIframeWhitelist($this->config->getFilterIframeWhitelist(array()));
+    		$this->attribute->setIntegerAttributes($this->config->getFilterIntegerAttributes(array()));
+    		$this->attribute->setAttributeOverrides($this->config->getFilterAttributeOverrides(array()));
+    		$this->attribute->setRequiredAttributes($this->config->getFilterRequiredAttributes(array()));
+    		$this->attribute->setMediaBlacklist($this->config->getFilterMediaBlacklist(array()));
+    		$this->attribute->setMediaAttributes($this->config->getFilterMediaAttributes(array()));
+    		$this->attribute->setSchemeWhitelist($this->config->getFilterSchemeWhitelist(array()));
+    		$this->attribute->setWhitelistedAttributes($this->config->getFilterWhitelistedTags(array()));
+    		$this->tag->setWhitelistedTags(array_keys($this->config->getFilterWhitelistedTags(array())));
+    	}
+    	return $this;
     }
 
 
@@ -124,8 +155,12 @@ class Html{
      */
     public function filterRules($content){
        
-
-        $loader = new RuleLoader();
+    	if ($this->config === null) {
+    		$config = new Config();
+    	} else {
+    		$config = $this->config;
+    	}
+        $loader = new RuleLoader($config);
         $rules = $loader->getRules($this->website);
 
         $url = new Url($this->website);

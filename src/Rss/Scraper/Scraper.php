@@ -8,6 +8,7 @@ use Commonhelp\Client\Url;
 use Commonhelp\Rss\Encoding;
 use Commonhelp\Rss\Filter\Filter;
 use Commonhelp\Rss\Parser\XmlParser;
+use Commonhelp\Rss\RssConfig;
 /**
  * Scraper class.
  *
@@ -48,6 +49,12 @@ class Scraper{
      */
     private $enableCandidateParser = true;
 
+    
+    private $config;
+    
+    public function __construct(RssConfig $config){
+    	$this->config = $config;
+    }
 
     /**
      * Disable candidates parsing.
@@ -151,7 +158,7 @@ class Scraper{
      */
     public function getFilteredContent(){
         $filter = Filter::html($this->content, $this->url);
-
+        $filter->setConfig($this->config);
         return $filter->execute();
     }
 
@@ -171,7 +178,9 @@ class Scraper{
             try {
                 $client = Client::getInstance();
                 $client->execute($this->url);
-
+                $client->setConfig($this->config);
+                $client->setTimeout($this->config->getGrabberTimeout());
+                $client->setUserAgent($this->config->getGrabberUserAgent());
                 $this->url = $client->getUrl();
                 $this->html = $client->getContent();
                 $this->encoding = $client->getEncoding();

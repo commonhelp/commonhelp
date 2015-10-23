@@ -7,6 +7,7 @@ use Commonhelp\Client\Client;
 use Commonhelp\Client\Exception\ClientException;
 use Commonelp\Client\Url;
 use Commonelp\Rss\Parser\XmlParser;
+use Commonhelp\Rss\RssConfig;
 
 /**
  * Favicon class.
@@ -43,6 +44,12 @@ class Favicon{
      */
     private $contentType = '';
 
+    private $config;
+    
+    public function __construct(RssConfig $config = null){
+    	$this->config = $config ?: new RssConfig();
+    }
+    
     /**
      * Get the icon file content (available only after the download).
      *

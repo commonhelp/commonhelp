@@ -3,6 +3,8 @@
 namespace Commonhelp\Client;
 
 use Commonhelp\Client\Exception;
+use Commonhelp\DI\SimpleContainer;
+use Commonhelp\Config\Config;
 
 abstract class Client{
 
@@ -145,6 +147,8 @@ abstract class Client{
 	 * @var bool
 	 */
 	protected $passthrough = false;
+	
+	
 
 	/**
 	 * Do the HTTP request.
@@ -580,6 +584,26 @@ abstract class Client{
 	public function disablePassthroughMode(){
 		$this->passthrough = false;
 
+		return $this;
+	}
+	
+	/**
+	 * Set config object.
+	 *
+	 *
+	 * @return Client
+	 */
+	public function setConfig($config){
+		if ($config !== null) {
+			$this->setTimeout($config->getClientTimeout());
+			$this->setUserAgent($config->getClientUserAgent());
+			$this->setMaxRedirections($config->getMaxRedirections());
+			$this->setMaxBodySize($config->getMaxBodySize());
+			$this->setProxyHostname($config->getProxyHostname());
+			$this->setProxyPort($config->getProxyPort());
+			$this->setProxyUsername($config->getProxyUsername());
+			$this->setProxyPassword($config->getProxyPassword());
+		}
 		return $this;
 	}
 }

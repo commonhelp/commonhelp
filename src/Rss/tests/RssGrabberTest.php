@@ -8,7 +8,8 @@ class RssGrabberTest extends \PHPUnit_Framework_TestCase{
 	private $url = 'http://www.dinamopress.it/inchieste/poligrow-il-volto-oscuro-del-capitalismo-italiano-in-colombia';
 	
 	public function testGrab(){
-		$grabber = new Scraper();
+		$config = new RssConfig();
+		$grabber = new Scraper($config);
 		$grabber->setUrl($this->url);
 		$grabber->execute();
 		

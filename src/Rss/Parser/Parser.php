@@ -85,6 +85,8 @@ abstract class Parser{
      */
     private $grabberIgnoreUrls = array();
 
+    private $config;
+    
     /**
      * Constructor.
      *
@@ -239,6 +241,7 @@ abstract class Parser{
     public function filterItemContent(Feed $feed, Item $item){
         if ($this->isFilteringEnabled()) {
             $filter = Filter::html($item->getContent(), $feed->getSiteUrl());
+            $filter->setConfig($this->config);
             $item->content = $filter->execute();
         } else {
             Logger::setMessage(get_called_class().': Content filtering disabled');
@@ -315,6 +318,18 @@ abstract class Parser{
 
         return $this;
     }
+    
+    /**
+     * Set config object.
+     *
+     * @param \Commonhelp\Config\Config $config Config instance
+     *
+     * @return \Commonhelp\Rss\Parser\Parser
+     */
+    public function setConfig($config){
+    	$this->config = $config;
+    	return $this;
+    }
 
     /**
      * Enable the content grabber.
@@ -331,7 +346,10 @@ abstract class Parser{
      * @return bool
      */
     public function isFilteringEnabled(){
-        return $this->enableFilter;
+        if ($this->config === null) {
+            return $this->enableFilter;
+        }
+        return $this->config->getContentFiltering($this->enableFilter);
     }
 
     /**

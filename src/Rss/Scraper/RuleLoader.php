@@ -2,12 +2,20 @@
 
 namespace Commonhelp\Rss\Scraper;
 
+use Commonhelp\Rss\RssConfig;
+
 /**
  * RuleLoader class.
  *
  */
 class RuleLoader{
 
+	private $config;
+	
+	public function __construct(RssConfig $config){
+		$this->config = $config;
+	}
+	
     /**
      * Get the rules for an URL.
      *
@@ -84,6 +92,11 @@ class RuleLoader{
      */
     public function getRulesFolders(){
         $folders = array(__DIR__.'/../Rules');
+        
+        if ($this->config !== null && $this->config->getGrabberRulesFolder() !== null) {
+        	$folders[] = $this->config->getGrabberRulesFolder();
+        }
+        
         return $folders;
     }
 }
