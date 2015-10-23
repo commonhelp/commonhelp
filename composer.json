@@ -1,5 +1,5 @@
 {
-    "name": "commonhelp/lib",
+    "name": "commonhelp/libs",
     "type": "library",
     "description": "Library for commonhelp development framework",
     "keywords": ["framework","library"],
