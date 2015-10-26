@@ -3,6 +3,7 @@
 namespace Commonhelp\Orm;
 
 use Commonhelp\Ldap\AstFilterManager;
+use Commonhelp\Orm\DataLayer\LdapDataLayer;
 class LdapDataLayerTest extends \PHPUnit_Framework_TestCase{
 	
 	protected $options = array(

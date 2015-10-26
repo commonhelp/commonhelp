@@ -1,6 +1,8 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node;
+
+use Commonhelp\Orm\Sql\Node\Join\JoinSourceNode;
 
 class SelectCoreNode extends Node{
 

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpunit colors="true" bootstrap="./vendor/autoload.php">
     <testsuites>
-        <!--<testsuite name="Ssh Test">
-            <directory>src/Ssh/tests</directory>
-        </testsuite>
+		<!--<testsuite name="Ssh Test">
+            <directory>./src/Commonhelp/Ssh/tests</directory>
+        </testsuite>-->
 		<testsuite name="Ldap Test">
-            <directory>src/Ldap/tests</directory>
+            <directory>./src/Commonhelp/Ldap/tests</directory>
         </testsuite>
 		<testsuite name="Expression test">
-            <directory>src/Util/Expression/tests</directory>
+            <directory>./src/Commonhelp/Util/Expression/tests</directory>
         </testsuite>
 		<testsuite name="Orm test">
-            <directory>src/Orm/tests</directory>
-        </testsuite>
+            <directory>./src/Commonhelp/Orm/tests</directory>
+        </testsuite>-->
 		<testsuite name="Sql test">
-			<directory>src/Orm/Sql/tests</directory>
-		</testsuite>-->
+			<directory>./src/Commonhelp/Orm/Sql/tests</directory>
+		</testsuite>
 		<testsuite name="Rss test">
 			<directory>./src/Commonhelp/Rss/tests</directory>
 		</testsuite>

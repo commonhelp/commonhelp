@@ -1,23 +1,22 @@
 {
-    "name": "commonhelp/ldap",
-    "description": "LDAP library",
+    "name": "commonhelp/orm",
+    "description": "ORM Library",
     "type": "library",
-    "require": {
-        "php": ">=5.3.2",
-        "commonhelp/resource": "",
-        "commonhelp/util": "",
-    },
     "license": "MIT",
     "authors": [
         {
-            "name": "Marco 'Marcoski' Trognoni",
+           "name": "Marco 'Marcoski' Trognoni",
             "email": "mtrognon@commonhelp.it",
             "homepage": "http://www.commonhelp.it",
             "role": "Developer"
         }
     ],
     "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.2",
+        "commonhelp/util": "",
+    },
     "autoload": {
-        "psr-4": { "Commonhelp\\Ldap": "" }
+        "psr-4": { "Commonhelp\\Orm": "" }
     },
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Commonhelp\Orm;
+namespace Commonhelp\Orm\DataLayer\DataAdaptee;
 
 class MysqlDataAdaptee extends DataAdaptee{
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Visitor;
 use Commonhelp\Util\Expression\Operator\OperatorVisitor;
 use Commonhelp\Util\Expression\Expression;
 use Commonhelp\Orm\Exception\SqlException;
 use Commonhelp\Util\Expression\Operator\SymbolExpression;
-
+use Commonhelp\Orm\Sql\Node\Node;
 
 class SqlOperatorVisitor extends OperatorVisitor{
 	

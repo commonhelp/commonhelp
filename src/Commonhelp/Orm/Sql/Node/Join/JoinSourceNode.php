@@ -1,7 +1,8 @@
 <?php
 
 namespace Commonhelp\Orm\Sql\Node\Join;
-use Commonhelp\Orm\Sql\Node\JoinNode;
+
+use Commonhelp\Orm\Sql\Node\BinaryNode;
 
 class JoinSourceNode extends BinaryNode{
 	

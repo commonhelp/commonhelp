@@ -1,6 +1,9 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Visitor;
+
+use Commonhelp\Orm\Sql\Node\SelectNode;
+use Commonhelp\Orm\Sql\Node\Unary\LimitNode;
 
 class SqliteVisitor extends SqlVisitor{
 	

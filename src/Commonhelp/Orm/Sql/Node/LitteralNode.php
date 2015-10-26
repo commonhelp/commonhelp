@@ -1,6 +1,6 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node;
 
 
 use Commonhelp\Util\Expression\Boolean\AndExpression;
@@ -13,6 +13,26 @@ use Commonhelp\Util\Expression\Operator\GreaterThanExpression;
 use Commonhelp\Util\Expression\Operator\LessThanEqualExpression;
 use Commonhelp\Util\Expression\Operator\LessThanExpression;
 use Commonhelp\Orm\Exception\SqlException;
+use Commonhelp\Orm\Sql\Node\Functions\SumFunctionNode;
+use Commonhelp\Orm\Sql\Node\Functions\MaxFunctionNode;
+use Commonhelp\Orm\Sql\Node\Functions\MinFunctionNode;
+use Commonhelp\Orm\Sql\Node\Functions\AverageFunctionNode;
+use Commonhelp\Orm\Sql\Node\Functions\CountFunctionNode;
+use Commonhelp\Orm\Sql\Node\Binary\EqualNode;
+use Commonhelp\Orm\Sql\Node\Binary\NotEqualNode;
+use Commonhelp\Orm\Sql\Node\Binary\InNode;
+use Commonhelp\Orm\Sql\Node\Binary\NotInNode;
+use Commonhelp\Orm\Sql\Node\Binary\MatchingNode;
+use Commonhelp\Orm\Sql\Node\Binary\NotMatchingNode;
+use Commonhelp\Orm\Sql\Node\Binary\AsNode;
+use Commonhelp\Orm\Sql\Node\Unary\AscendingNode;
+use Commonhelp\Orm\Sql\Node\Unary\DescendingNode;
+use Commonhelp\Orm\Sql\Predications\SqlPredications;
+use Commonhelp\Orm\Sql\SqlExpression;
+use Commonhelp\Orm\Sql\Predications\SqlOrderingPredications;
+use Commonhelp\Orm\Sql\Predications\SqlAliasPredications;
+
+
 
 
 /**
@@ -21,7 +41,7 @@ use Commonhelp\Orm\Exception\SqlException;
  * @ TODO QUOTED STRING using specific visitor for specific dbrms
  * @ TODO Implements BETWEEN and NOT BETWEEN Node
  */
-class LitteralNode extends Node implements SqlExpression, SqlPredictions, SqlOrderingPredictions, SqlAliasPredictions{
+class LitteralNode extends Node implements SqlExpression, SqlPredications, SqlOrderingPredications, SqlAliasPredications{
 	
 	protected $toQuote;
 	

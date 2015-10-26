@@ -2,8 +2,8 @@
 
 namespace Commonhelp\Orm\Sql;
 
-use Commonhelp\Orm\PdoDataLayer;
 use Commonhelp\Util\Inflector;
+use Commonhelp\Orm\Sql\Node\AttributeNode;
 class Sql implements \ArrayAccess{
 	
 	protected $table;

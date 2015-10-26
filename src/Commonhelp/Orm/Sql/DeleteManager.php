@@ -2,6 +2,11 @@
 
 namespace Commonhelp\Orm\Sql;
 
+use Commonhelp\Orm\Sql\Node\DeleteNode;
+use Commonhelp\Orm\Sql\Node\LitteralNode;
+use Commonhelp\Orm\Sql\Node\WhereNode;
+use Commonhelp\Orm\Sql\Node\Unary\LimitNode;
+
 class DeleteManager extends AstSqlManager{
 
 	public function __construct(){

@@ -1,8 +1,15 @@
 <?php
 
 namespace Commonhelp\Orm\Sql;
-use Commonhelp\Util\Expression\Operator\EqualExpression;
 
+use Commonhelp\Util\Expression\Operator\EqualExpression;
+use Commonhelp\Orm\Sql\Node\AttributeNode;
+use Commonhelp\Orm\Sql\Node\Unary\LimitNode;
+use Commonhelp\Orm\Sql\Node\OrderingNode;
+use Commonhelp\Orm\Sql\Node\LitteralNode;
+use Commonhelp\Orm\Sql\Node\WhereNode;
+use Commonhelp\Orm\Sql\Node\UpdateNode;
+use Commonhelp\Orm\Sql\Node\Node;
 
 class UpdateManager extends AstSqlManager{
 	

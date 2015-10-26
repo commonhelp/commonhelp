@@ -1,9 +1,9 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Predications;
 
 
-interface SqlAliasPredictions{
+interface SqlAliasPredications{
 
 	function alias($other);
 	

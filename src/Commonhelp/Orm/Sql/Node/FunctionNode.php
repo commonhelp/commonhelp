@@ -11,8 +11,13 @@ use Commonhelp\Util\Expression\Operator\GreaterThanEqualExpression;
 use Commonhelp\Util\Expression\Operator\GreaterThanExpression;
 use Commonhelp\Util\Expression\Operator\LessThanEqualExpression;
 use Commonhelp\Util\Expression\Operator\LessThanExpression;
+use Commonhelp\Orm\Sql\Node\Binary\NotInNode;
+use Commonhelp\Orm\Sql\Node\Binary\InNode;
+use Commonhelp\Orm\Sql\Node\Binary\MatchingNode;
+use Commonhelp\Orm\Sql\Node\Binary\NotMatchingNode;
+use Commonhelp\Orm\Sql\Predications\SqlPredications;
 
-class FunctionNode extends Node implements SqlPredictions{
+class FunctionNode extends Node implements SqlPredications{
 	
 	
 	public function __construct($expression, LitteralNode $alias=null) {

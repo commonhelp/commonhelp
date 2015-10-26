@@ -1,11 +1,12 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Visitor;
 use Commonhelp\Util\Expression\Boolean\BooleanVisitor;
 use Commonhelp\Util\Expression\Expression;
 use Commonhelp\Util\Expression\Boolean\NonTerminalExpression;
 use Commonhelp\Util\Expression\Boolean\TerminalExpression;
 use Commonhelp\Util\Expression\Operator\OperatorExpression;
+use Commonhelp\Orm\Sql\Node\Node;
 
 
 class SqlBooleanVisitor extends BooleanVisitor{

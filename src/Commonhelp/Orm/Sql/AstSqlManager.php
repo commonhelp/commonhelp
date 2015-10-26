@@ -3,6 +3,7 @@
 namespace Commonhelp\Orm\Sql;
 
 use Commonhelp\Util\Expression\AstManager;
+use Commonhelp\Orm\Sql\Visitor\SqlVisitor;
 
 abstract class AstSqlManager implements AstManager{
 	

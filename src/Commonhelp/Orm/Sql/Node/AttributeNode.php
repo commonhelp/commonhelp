@@ -2,6 +2,7 @@
 
 namespace Commonhelp\Orm\Sql\Node;
 
+use Commonhelp\Orm\Sql\Sql;
 
 class AttributeNode extends LitteralNode{
 	

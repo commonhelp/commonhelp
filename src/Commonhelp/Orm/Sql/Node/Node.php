@@ -1,11 +1,11 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node;
 
-use Commonhelp\Util\Expression\ASTreeExpression;
+use Commonhelp\Util\Expression\AstTreeExpression;
 use Commonhelp\Util\Expression\Visitor;
 
-class Node extends ASTreeExpression{
+class Node extends AstTreeExpression{
 	
 	const IS = 6;
 	const ISNOT = 7;

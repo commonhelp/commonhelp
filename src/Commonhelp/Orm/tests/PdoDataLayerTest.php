@@ -3,8 +3,7 @@
 namespace Commonhelp\Orm;
 
 use Commonhelp\Orm\Sql\Sql;
-use Commonhelp\DI\Container;
-use Commonhelp\Config\ConfigServiceProvider;
+use Commonhelp\Orm\DataLayer\PdoDataLayer;
 class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 	
 	protected $config;

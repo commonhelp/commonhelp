@@ -1,9 +1,9 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Predications;
 
 
-interface SqlOrderingPredictions{
+interface SqlOrderingPredications{
 
 	function asc();
 	

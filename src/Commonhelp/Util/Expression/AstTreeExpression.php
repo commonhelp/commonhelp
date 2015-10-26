@@ -10,7 +10,7 @@ use ArrayAccess;
 use IteratorAggregate;
 use Countable;
 
-abstract class ASTreeExpression implements Expression, ArrayAccess, IteratorAggregate, Countable{
+abstract class AstTreeExpression implements Expression, ArrayAccess, IteratorAggregate, Countable{
 	
 	protected $expressions;
 	

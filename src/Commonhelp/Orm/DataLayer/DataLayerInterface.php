@@ -1,6 +1,6 @@
 <?php
 
-namespace Commonhelp\Orm;
+namespace Commonhelp\Orm\DataLayer;
 
 use Commonhelp\Util\Expression\AstManager;
 

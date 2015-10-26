@@ -1,6 +1,9 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Visitor;
+
+use Commonhelp\Orm\Sql\Node\Binary\MatchingNode;
+use Commonhelp\Orm\Sql\Node\Binary\NotMatchingNode;
 
 class PgsqlVisitor extends SqlVisitor{
 	

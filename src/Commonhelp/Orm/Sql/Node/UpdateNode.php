@@ -1,6 +1,6 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Node;
 
 
 class UpdateNode extends Node {

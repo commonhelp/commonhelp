@@ -2,7 +2,12 @@
 
 namespace Commonhelp\Client;
 
-use Commonhelp\Client\Exception;
+use Commonhelp\Client\Exception\ClientException;
+use Commonhelp\Client\Exception\MaxRedirectException;
+use Commonhelp\Client\Exception\InvalidCertificateException;
+use Commonhelp\Client\Exception\InvalidUrlException;
+use Commonhelp\Client\Exception\MaxSizeException;
+use Commonhelp\Client\Exception\TimeoutException;
 
 /**
  * cURL HTTP client.

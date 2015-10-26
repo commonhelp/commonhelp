@@ -1,9 +1,9 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Predications;
 
 
-interface SqlPredictions{
+interface SqlPredications{
 	
 	function not_eq($other);
 	

@@ -1,6 +1,11 @@
 <?php
 
-namespace Commonhelp\Orm\Sql;
+namespace Commonhelp\Orm\Sql\Visitor;
+
+use Commonhelp\Orm\Sql\Node\LitteralNode;
+use Commonhelp\Orm\Sql\Node\Unary\LimitNode;
+use Commonhelp\Orm\Sql\Node\SelectNode;
+use Commonhelp\Orm\Sql\Node\SelectCoreNode;
 
 class MysqlVisitor extends SqlVisitor{
 	

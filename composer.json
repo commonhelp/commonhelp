@@ -22,7 +22,9 @@
     },
     "autoload": {
     	"psr-4": {
-    		"Commonhelp\\": "src/Commonhelp"
+    		"Commonhelp\\": "src/Commonhelp",
+    		"Test\\Pdo\\":  "src/Commonhelp/Orm/tests/Entity/Pdo",
+    		"Test\\Ldap\\":  "src/Commonhelp/Orm/tests/Entity/Ldap"
     	}
     },
     "minimum-stability": "dev"

@@ -2,6 +2,11 @@
 
 namespace Commonhelp\Orm\Sql;
 
+use Commonhelp\Orm\Sql\Node\InsertNode;
+use Commonhelp\Orm\Sql\Node\AttributeNode;
+use Commonhelp\Orm\Sql\Node\LitteralNode;
+use Commonhelp\Orm\Sql\Node\ValuesNode;
+
 class InsertManager extends AstSqlManager{
 	
 	public function __construct(){
