@@ -18,10 +18,20 @@ class PdoDataLayer extends DataLayerInterface{
 	protected $password;
 	protected $dsn;
 	
+	protected static $validTypes = array(
+		'mysql',
+		'sqlite'	
+	);
 	
-	public function __construct(array $options){
+	
+	public function __construct(array $options = array()){
+		if(empty($options)){
+			$options['dsn'] = null;
+			$options['username'] = '';
+			$options['password'] = '';
+		}
 		if(!isset($options['dsn'])){
-			throw new DataLayerException('DSN string must be provided to a database connection');
+			$options['dsn'] = null;
 		}
 		if(!isset($options['username'])){
 			$options['username'] = '';
@@ -36,7 +46,7 @@ class PdoDataLayer extends DataLayerInterface{
 		
 	}
 	
-	public static function instance(array $options){
+	public static function instance(array $options=array()){
 		if(!static::$instance){
 			static::$instance = new PdoDataLayer($options);
 		}
@@ -44,7 +54,23 @@ class PdoDataLayer extends DataLayerInterface{
 		return static::$instance;
 	}
 	
-	public function connect(){
+	public function connect(array $options = array()){
+		if(empty($options) && is_null($this->dsn)){
+			throw new DataLayerException('DSN string must be provided to a database connection');
+		}else if(!empty($options)){
+			if(!isset($options['dsn'])){
+				throw new DataLayerException('DSN string must be provided to a database connection');
+			}
+			if(!isset($options['username'])){
+				$options['username'] = '';
+			}
+			if(!isset($options['password'])){
+				$options['password'] = '';
+			}
+			$this->username = $options['username'];
+			$this->password = $options['password'];
+			$this->dsn = $options['dsn'];
+		}
 		$this->pdo = new PDO($this->dsn, $this->username, $this->password);
 		/**
 		 * MUST USE FULL NAMESPACE
@@ -128,6 +154,13 @@ class PdoDataLayer extends DataLayerInterface{
 	
 	protected function getDriver(){
 		return $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+	}
+	
+	public static function isValidType($type){
+		if($type === ''){
+			return false;
+		}
+		return in_array($type, self::$validTypes);
 	}
 	
 }

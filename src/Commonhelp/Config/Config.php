@@ -5,6 +5,8 @@ namespace Commonhelp\Config;
 use Commonhelp\Util\Collections\ArrayCollection;
 abstract class Config extends ArrayCollection{
 	
+	protected $validMethodList;
+	
 	/**
 	 * Magic method to have any kind of setters or getters.
 	 *
@@ -30,6 +32,8 @@ abstract class Config extends ArrayCollection{
 		}
 	}
 	
-	abstract function isValidMethod($method);
+	public function isValidMethod($method){
+		return in_array($method, $this->validMethodList);
+	}
 }
 

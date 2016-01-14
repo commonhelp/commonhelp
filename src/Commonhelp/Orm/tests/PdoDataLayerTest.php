@@ -19,8 +19,13 @@ class PdoDataLayerTest extends \PHPUnit_Framework_TestCase{
 		$this->layer = new PdoDataLayer($this->connection);
 	}
 	
-	public function testConnection(){
+	public function testConnectionWithParam(){
 		$connection = PdoDataLayer::instance($this->connection);
+	}
+	
+	public function testConnectionWithoutParam(){
+		$connection = PdoDataLayer::instance();
+		$connection->connect($this->connection);
 	}
 	
 	public function testRead(){

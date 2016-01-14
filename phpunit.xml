@@ -3,21 +3,24 @@
     <testsuites>
 		<!--<testsuite name="Ssh Test">
             <directory>./src/Commonhelp/Ssh/tests</directory>
-        </testsuite>-->
+        </testsuite>
 		<testsuite name="Ldap Test">
             <directory>./src/Commonhelp/Ldap/tests</directory>
         </testsuite>
 		<testsuite name="Expression test">
             <directory>./src/Commonhelp/Util/Expression/tests</directory>
-        </testsuite>
+     </testsuite>-->
 		<testsuite name="Orm test">
             <directory>./src/Commonhelp/Orm/tests</directory>
-        </testsuite>-->
-		<testsuite name="Sql test">
+        </testsuite>
+		<!--<testsuite name="Sql test">
 			<directory>./src/Commonhelp/Orm/Sql/tests</directory>
 		</testsuite>
 		<testsuite name="Rss test">
 			<directory>./src/Commonhelp/Rss/tests</directory>
 		</testsuite>
+		<testsuite name="Security test">
+			<directory>./src/Commonhelp/Util/Security/tests</directory>
+		</testsuite>-->
     </testsuites>
 </phpunit>

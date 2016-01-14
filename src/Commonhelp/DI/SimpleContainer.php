@@ -2,6 +2,7 @@
 namespace Commonhelp\DI;
 
 use Closure;
+use ReflectionClass;
 use Commonhelp\DI\IContainer;
 use Commonhelp\DI\Exception\QueryException;
 
@@ -69,6 +70,17 @@ class SimpleContainer extends Container implements IContainer {
 			});
 			return $object;
 		}
+	}
+	
+	public function querySet($pattern, $exclude=array()){
+		$objects = array();
+		foreach($this->keys() as $name){
+			if(preg_match('/'.$pattern.'/', $name) && !in_array($name, $exclude)){
+				$objects[$name] = $this->query($name);
+			}
+		}
+		
+		return $objects;
 	}
 	
 	/**
