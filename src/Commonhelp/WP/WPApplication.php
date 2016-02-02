@@ -35,6 +35,14 @@ abstract class WPApplication extends AbstractApplication{
 		return $this->themeRoot;
 	}
 	
+	public function getThemeUri(){
+		return $this->themeUri;
+	}
+	
+	public function getChildUri(){
+		return $this->childUri;
+	}
+	
 	public static function main($controllerName, $methodName, SimpleContainer $container, array $urlParams = null){
 		if (!is_null($urlParams)) {
 			$container['Request']->setUrlParameters($urlParams);

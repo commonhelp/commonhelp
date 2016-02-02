@@ -31,7 +31,6 @@ class RuleLoader{
 
             foreach ($this->getRulesFolders() as $folder) {
                 $rule = $this->loadRuleFile($folder, $files);
-
                 if (!empty($rule)) {
                     return $rule;
                 }
@@ -91,12 +90,18 @@ class RuleLoader{
      * @return array
      */
     public function getRulesFolders(){
-        $folders = array(__DIR__.'/../Rules');
+        $folders = array(__DIR__.'/Rules');
         
         if ($this->config !== null && $this->config->getGrabberRulesFolder() !== null) {
-        	$folders[] = $this->config->getGrabberRulesFolder();
+        	$folder = $this->config->getGrabberRulesFolder();
+        	if(is_array($folder)){
+        		foreach($folder as $f){
+        			$folders[] = $f;
+        		}
+        	}else{
+        		$folders[] = $folder;
+        	}
         }
-        
         return $folders;
     }
 }

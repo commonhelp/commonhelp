@@ -243,12 +243,10 @@ class Scraper{
     public function getParser(){
         $ruleLoader = new RuleLoader($this->config);
         $rules = $ruleLoader->getRules($this->url);
-
         if (!empty($rules['grabber'])) {
             foreach ($rules['grabber'] as $pattern => $rule) {
                 $url = new Url($this->url);
                 $sub_url = $url->getFullPath();
-
                 if (preg_match($pattern, $sub_url)) {
                     return new RuleParser($this->html, $rule);
                 }
