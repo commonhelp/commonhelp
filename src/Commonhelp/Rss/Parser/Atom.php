@@ -5,6 +5,7 @@ namespace Commonhelp\Rss\Parser;
 use SimpleXMLElement;
 use Commonhelp\Rss\Filter\Filter;
 use Commonhelp\Client\Url;
+use Commonhelp\Util\XmlParser;
 
 /**
  * Atom parser.

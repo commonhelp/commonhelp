@@ -24,7 +24,9 @@ class SystemConfig extends Config{
 		'getDbPassword',
 		'setDbPassword',
 		'setDbType',
-		'getDbType'
+		'getDbType',
+		'getSystemValue',
+		'setSystemValue'
 	);
 	
 	

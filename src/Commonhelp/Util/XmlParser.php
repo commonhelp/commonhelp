@@ -1,6 +1,6 @@
 <?php
 
-namespace Commonhelp\Rss\Parser;
+namespace Commonhelp\Util;
 
 use Closure;
 use DomDocument;
@@ -264,5 +264,25 @@ class XmlParser{
         }
 
         return $xml->xpath($query);
+    }
+    
+    public static function disableInternalErrors(){
+    	return libxml_use_internal_errors(false);
+    }
+    
+    public static function enableInternalErrors(){
+    	return libxml_use_internal_errors(true);
+    }
+    
+    public static function disableExternalEntityLoad(){
+    	if(function_exists('libxml_disable_entity_loader')){
+    		return libxml_disable_entity_loader(true);
+    	}
+    }
+    
+    public static function enableExternalEntityLoad(){
+    	if(function_exists('libxml_disable_entity_loader')){
+    		return libxml_disable_entity_loader(false);
+    	}
     }
 }

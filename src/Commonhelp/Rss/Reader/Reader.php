@@ -6,10 +6,11 @@ use DOMXPath;
 
 use Commonhelp\Client\Client;
 use Commonhelp\Client\Url;
-use Commonhelp\Rss\Parser\XmlParser;
+
 use Commonhelp\Rss\Exception\UnsupportedFeedFormatException;
 use Commonhelp\Rss\Exception\SubscriptionNotFoundException;
 use Commonhelp\Rss\RssConfig;
+use Commonhelp\Util\XmlParser;
 
 /**
  * Reader class.
@@ -97,8 +98,7 @@ class Reader{
      *
      * @return array List of feed links
      */
-    public function find($url, $html){
-        
+    public function find($url, $html){ 
     	$dom = XmlParser::getHtmlDocument($html);
         $xpath = new DOMXPath($dom);
         $links = array();

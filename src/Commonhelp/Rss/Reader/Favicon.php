@@ -6,7 +6,7 @@ use DOMXpath;
 use Commonhelp\Client\Client;
 use Commonhelp\Client\Exception\ClientException;
 use Commonelp\Client\Url;
-use Commonelp\Rss\Parser\XmlParser;
+use Commonelp\Util\XmlParser;
 use Commonhelp\Rss\RssConfig;
 
 /**

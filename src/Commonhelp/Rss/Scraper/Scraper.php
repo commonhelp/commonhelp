@@ -7,7 +7,7 @@ use Commonhelp\Client\Exception\ClientException;
 use Commonhelp\Client\Url;
 use Commonhelp\Rss\Encoding;
 use Commonhelp\Rss\Filter\Filter;
-use Commonhelp\Rss\Parser\XmlParser;
+use Commonhelp\Util\XmlParser;
 use Commonhelp\Rss\RssConfig;
 /**
  * Scraper class.

@@ -3,7 +3,7 @@
 namespace Commonhelp\Rss\Filter;
 
 use DOMXpath;
-use Commonhelp\Rss\Parser\XmlParser;
+use Commonhelp\Util\XmlParser;
 use Commonhelp\Rss\RssConfig;
 
 /**

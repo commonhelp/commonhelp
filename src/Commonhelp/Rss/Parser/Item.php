@@ -2,6 +2,7 @@
 
 namespace Commonhelp\Rss\Parser;
 
+use Commonhelp\Util\XmlParser;
 /**
  * Feed Item.
  *

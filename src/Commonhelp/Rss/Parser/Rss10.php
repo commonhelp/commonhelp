@@ -4,6 +4,7 @@ namespace Commonhelp\Rss\Parser;
 
 use SimpleXMLElement;
 use Commonhelp\Rss\Filter\Filter;
+use Commonhelp\Util\XmlParser;
 
 /**
  * RSS 1.0 parser.

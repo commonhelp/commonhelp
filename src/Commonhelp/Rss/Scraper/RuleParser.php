@@ -3,7 +3,7 @@
 namespace Commonhelp\Rss\Scraper;
 
 use DOMXPath;
-use Commonhelp\Rss\Parser\XmlParser;
+use Commonhelp\Util\XmlParser;
 
 /**
  * Rule Parser.

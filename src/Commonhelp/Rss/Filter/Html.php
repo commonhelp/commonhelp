@@ -5,7 +5,7 @@ namespace Commonhelp\Rss\Filter;
 
 use Commonhelp\Client\Url;
 use Commonhelp\Rss\Scraper\RuleLoader;
-use Commonhelp\Rss\Parser\XmlParser;
+use Commonhelp\Util\XmlParser;
 use Commonhelp\Rss\RssConfig;
 
 /**

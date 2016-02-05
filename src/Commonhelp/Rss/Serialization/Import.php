@@ -4,7 +4,7 @@ namespace Commonhelp\Rss\Serialization;
 
 use SimpleXmlElement;
 use StdClass;
-use Commonhelp\Rss\Parser\XmlParser;
+use Commonhelp\Util\XmlParser;
 
 /**
  * OPML Import.

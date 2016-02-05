@@ -7,6 +7,7 @@ use Commonhelp\Client\Url;
 use Commonhelp\Rss\Encoding;
 use Commonhelp\Rss\Filter\Filter;
 use Commonhelp\Rss\Scraper\Scraper;
+use Commonhelp\Util\XmlParser;
 
 /**
  * Base parser class.

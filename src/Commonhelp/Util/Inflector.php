@@ -754,4 +754,30 @@ class Inflector
         );
         return preg_replace(array_keys($map), array_values($map), $string);
     }
+    
+    
+    public static function atts($text) {
+			$atts = array();
+			$pattern = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
+			$text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
+			if(preg_match_all($pattern, $text, $match, PREG_SET_ORDER)){
+				foreach($match as $m){
+					if(!empty($m[1])){
+						$atts[strtolower($m[1])] = stripcslashes($m[2]);
+					}else if(!empty($m[3])){
+						$atts[strtolower($m[3])] = stripcslashes($m[4]);
+					}else if (!empty($m[5])){
+							$atts[strtolower($m[5])] = stripcslashes($m[6]);
+					}else if(isset($m[7]) and strlen($m[7])){
+						$atts[] = stripcslashes($m[7]);
+					}else if(isset($m[8])){
+						$atts[] = stripcslashes($m[8]);
+					}
+				}
+			}else{
+				$atts = ltrim($text);
+			}
+			
+			return $atts;
+    }
 }
