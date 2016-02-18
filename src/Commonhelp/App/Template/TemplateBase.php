@@ -40,9 +40,13 @@ abstract class TemplateBase{
 		return true;
 	}
 	
-	protected function load($file){
+	protected function load($file, $vars=array()){
 		//Register variable
-		extract($this->vars);
+		if(empty($vars)){
+			extract($this->vars);
+		}else{
+			extract($vars);
+		}
 		
 		ob_start();
 		include $file;

@@ -8,6 +8,7 @@ use Commonhelp\App\Http\TemplateResponse;
 use Commonhelp\App\Http\JsonResponse;
 use Commonhelp\App\Exception\ControllerException;
 use Commonhelp\Util\Inflector;
+use Commonhelp\App\Http\Commonhelp\App\Http;
 
 abstract class WPController extends AbstractController implements WPIController{
 	
@@ -36,6 +37,9 @@ abstract class WPController extends AbstractController implements WPIController{
 				'data'		=> $template->render()
 			);
 			return new JsonResponse($jsonData);
+		});
+		$this->registerResponder('string', function($response){
+			return new DataResponse($response);
 		});
 	}
 	

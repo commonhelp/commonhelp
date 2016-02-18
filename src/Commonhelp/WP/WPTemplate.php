@@ -49,7 +49,28 @@ class WPTemplate extends TemplateBase{
 	}
 
 	public function inc($template, $additionalParams){
-
+		try{
+			$locator = new TemplateFileLocator($this->templateDirs);
+			$template = $locator->find($template);
+			return $this->load($template, $additionalParams);
+		}catch(TemplateNotFoundException $e){
+			return null;
+		}
+	}
+	
+	public function issetTemplate($template){
+	try{
+			$locator = new TemplateFileLocator($this->templateDirs);
+			$template = $locator->find($template);
+			
+			if($template !== ''){
+				return true;
+			}
+			
+			return false;
+		}catch(TemplateNotFoundException $e){
+			return false;
+		}
 	}
 
 	public static function renderError(AbstractController $controller, $error_msg){

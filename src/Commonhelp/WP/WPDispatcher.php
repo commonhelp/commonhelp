@@ -7,19 +7,23 @@ use Commonhelp\App\Exception\TemplateNotFoundException;
 use Commonhelp\WP\WPTemplate;
 use Commonhelp\App\Http\JsonResponse;
 use Commonhelp\WP\Exception\WPResponderNotFoundException;
+use Commonhelp\App\Http\DataResponse;
 
 class WPDispatcher extends Dispatcher{
 	
+	protected $responders;
+	
 	protected function executeController(WPController $controller, $methodName) {
-		$controller->setAction($methodName);
 		$arguments = $this->request->getUrlParams();
+		$responder = $this->reflector->getResponder();
 		$response = call_user_func_array(array($controller, $methodName), $arguments);
-		if(is_null($response)) {
-			if($this->reflector->getResponder() === null){
+		if(is_null($response)){
+			if($responder === null){
+				$controller->setAction($methodName);
 				$response = $controller->render($response, 'template');
 			}else{
-				$responder = $this->reflector->getResponder();
 				if($controller->hasResponder($responder)){
+					$controller->setAction($methodName);
 					$response = $controller->render($response, $responder);
 				}else{
 					throw new WPResponderNotFoundException('Responder: '.$responder.' not register for '
@@ -28,6 +32,8 @@ class WPDispatcher extends Dispatcher{
 			}
 		}else if(is_array($response)){
 			$response = new JsonResponse($response);
+		}else if($responder === 'string'){
+			return new DataResponse($response);
 		}else{
 			$data = array('data' => $response);
 			$response = new JsonResponse($data);
