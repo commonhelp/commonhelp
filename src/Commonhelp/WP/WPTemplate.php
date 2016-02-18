@@ -22,9 +22,14 @@ class WPTemplate extends TemplateBase{
 			$this->methodName = $methodName;
 		}
 		$this->controller = $controller;
-		list($path, $name) = $this->findTemplate($controller->getAppName(), $this->methodName);
-		$this->path = $path;
-		$this->template = $name;
+		try{
+			list($path, $name) = $this->findTemplate($controller->getAppName(), $this->methodName);
+			$this->path = $path;
+			$this->template = $name;
+		}catch(TemplateNotFoundException $e){
+			$this->path = null;
+			$this->template = null;
+		}
 	}
 
 	public function setTemplateDirs(array $templateDirs){

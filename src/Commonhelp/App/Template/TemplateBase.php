@@ -3,6 +3,7 @@
 namespace Commonhelp\App\Template;
 
 use Commonhelp\App\AbstractController;
+use Commonhelp\App\Exception\TemplateNullException;
 abstract class TemplateBase{
 	
 	protected $template;
@@ -32,6 +33,9 @@ abstract class TemplateBase{
 	}
 	
 	public function render(){
+		if(is_null($this->template)){
+			throw new TemplateNullException('Empty');
+		}
 		return $this->load($this->template);
 	}
 	
@@ -53,6 +57,7 @@ abstract class TemplateBase{
 		$data = ob_get_contents();
 		@ob_end_clean();
 		// Return data
+		
 		return $data;
 	}
 	

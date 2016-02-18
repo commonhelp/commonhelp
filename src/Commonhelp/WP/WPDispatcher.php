@@ -8,6 +8,7 @@ use Commonhelp\WP\WPTemplate;
 use Commonhelp\App\Http\JsonResponse;
 use Commonhelp\WP\Exception\WPResponderNotFoundException;
 use Commonhelp\App\Http\DataResponse;
+use Commonhelp\App\Http\Response;
 
 class WPDispatcher extends Dispatcher{
 	
@@ -34,6 +35,8 @@ class WPDispatcher extends Dispatcher{
 			$response = new JsonResponse($response);
 		}else if($responder === 'string'){
 			return new DataResponse($response);
+		}else if($response instanceof Response){
+			return $response;
 		}else{
 			$data = array('data' => $response);
 			$response = new JsonResponse($data);
