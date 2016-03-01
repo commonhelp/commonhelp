@@ -48,7 +48,7 @@ class Shortcode extends ArrayCollection{
 		return
 		'\\['                              // Opening bracket
 		. '(\\[?)'                           // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
-		. "($tagregexp)"                     // 2: Shortcode name
+		. "($tagRegexp)"                     // 2: Shortcode name
 		. '(?![\\w-])'                       // Not followed by word character or hyphen
 		. '('                                // 3: Unroll the loop: Inside the opening shortcode tag
 		.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash
@@ -85,7 +85,7 @@ class Shortcode extends ArrayCollection{
 			return $content;
 		}
 		
-		preg_match_all('@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches);
+		preg_match_all('@\[([a-zA-Z0-9_-]++)@', $content, $matches);
 		$tagNames = array_intersect(array_keys($this->toArray()), $matches[1]);
 		if(empty($tagNames)){
 			return $content;
@@ -178,7 +178,6 @@ class Shortcode extends ArrayCollection{
 			$element = $front . implode('', $attributes) . $back;
 			$element = strtr($element, $trans);
 		}
-		
 		$content = implode('', $textArray);
 		
 		return $content;
