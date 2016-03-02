@@ -43,8 +43,8 @@ abstract class WPController extends AbstractController implements WPIController{
 		});
 	}
 	
-	protected function setTemplateDir($templateDirs){
-		$this->templateDir = $templateDirs;
+	protected function setTemplateDirs($templateDirs){
+		$this->templateDirs = $templateDirs;
 	}
 	
 	public function getTemplateDirs(){

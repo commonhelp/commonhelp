@@ -5,6 +5,7 @@ use Commonhelp\App\Template\TemplateBase;
 use Commonhelp\App\Template\TemplateFileLocator;
 use Commonhelp\App\Exception\TemplateNotFoundException;
 use Commonhelp\App\AbstractController;
+use Commonhelp\App\Template\Commonhelp\App\Template;
 
 class WPTemplate extends TemplateBase{
 
@@ -27,8 +28,14 @@ class WPTemplate extends TemplateBase{
 			$this->path = $path;
 			$this->template = $name;
 		}catch(TemplateNotFoundException $e){
-			$this->path = null;
-			$this->template = null;
+			try{
+				$locator = new TemplateFileLocator($this->templateDirs);
+				$this->template = $locator->find($this->methodName);
+				$this->path = $locator->getPath();
+			}catch(TemplateNotFoundException $e){
+				$this->path = null;
+				$this->template = null;
+			}
 		}
 	}
 
