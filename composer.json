@@ -15,7 +15,8 @@
     ],
 	"require": {
         "php": ">=5.4",
-        "ircmaxell/random-lib": "*"
+        "ircmaxell/random-lib": "*",
+        "monolog/monolog": "^1.18"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
