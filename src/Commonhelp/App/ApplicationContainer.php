@@ -11,7 +11,7 @@ class ApplicationContainer extends SimpleContainer{
 	
 	private $middleWares = array();
 	
-	public function __construct($appName, $urlParams=array()){
+	public function __construct($appName='', $urlParams=array()){
 		parent::__construct();
 		$this['appName'] = $appName;
 		$this['urlParams'] = $urlParams;
