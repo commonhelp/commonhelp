@@ -9,6 +9,7 @@ use Commonhelp\App\Http\Http;
 use Commonhelp\Util\Security\SecureRandom;
 class ApplicationContainer extends SimpleContainer{
 	
+	
 	private $middleWares = array();
 	
 	public function __construct($appName='', $urlParams=array()){
@@ -18,64 +19,6 @@ class ApplicationContainer extends SimpleContainer{
 		
 		$this->registerService('SystemConfig', function($c){
 			return new SystemConfig();
-		});
-		$this->registerService('ApplicationConfig', function(ApplicationContainer $c){
-			return new ApplicationConfig($c->getDatabaseLayer(), $c->getSystemConfig());
-		});
-		$this->registerService('DatabaseLayer', function(ApplicationContainer $c){
-			$systemConfig = $c->getSystemConfig();
-			$conOptions = array(
-				'dsn' 		=> $systemConfig->getDbDsn(),
-				'username' 	=> $systemConfig->getDbUsername(),
-				'password'	=> $systemConfig->getDbPassword()	
-			);
-			if(PdoDataLayer::isValidType($systemConfig->getDbType())){
-				throw new DatabaseException('Invalid database type');
-			}
-			
-			return PdoDataLayer::instance($conOptions);
-		});
-		
-		$this->registerService('Request', function($c){
-			$urlParams = $this['urlParams'];
-			if (defined('PHPUNIT_RUN') && PHPUNIT_RUN
-					&& in_array('fakeinput', stream_get_wrappers())
-			) {
-				$stream = 'fakeinput://data';
-			} else {
-				$stream = 'php://input';
-			}
-			
-			return new Request(
-				[
-					'get' => $_GET,
-					'post' => $_POST,
-					'files' => $_FILES,
-					'server' => $_SERVER,
-					'env' => $_ENV,
-					'cookies' => $_COOKIE,
-					'method' => (isset($_SERVER) && isset($_SERVER['REQUEST_METHOD']))
-					? $_SERVER['REQUEST_METHOD']
-					: null,
-					'urlParams' => $urlParams,
-					'requesttoken' => $requestToken,
-				],
-				$this->getSecureRandom(),
-				$this->getSystemConfig(),
-				$stream
-			);
-		});
-		
-		$this->registerService('SecureRandom', function(ApplicationContainer $c){
-			return new SecureRandom();
-		});
-		
-		$this->registerService('Protocol', function($c){
-			if(isset($_SERVER['SERVER_PROTOCOL'])){
-				return new Http($_SERVER, $_SERVER['SERVER_PROTOCOL']);
-			}else{
-				return new Http($_SERVER);
-			}
 		});
 		
 		$this->registerAlias('ControllerMethodReflector', 'Commonhelp\Util\Reflector\ControllerMethodReflector');
@@ -93,14 +36,69 @@ class ApplicationContainer extends SimpleContainer{
 			
 			return $dispatcher;
 		});
+		
+		$this->registerServices();
+	}
+	
+	public function registerServices(){
+		$this->registerService('DatabaseLayer', function(ApplicationContainer $c){
+			$systemConfig = $c->getSystemConfig();
+			$conOptions = array(
+					'dsn' 		=> $systemConfig->getDbDsn(),
+					'username' 	=> $systemConfig->getDbUsername(),
+					'password'	=> $systemConfig->getDbPassword()
+			);
+			if(PdoDataLayer::isValidType($systemConfig->getDbType())){
+				throw new DatabaseException('Invalid database type');
+			}
+				
+			return PdoDataLayer::instance($conOptions);
+		});
+		
+		$this->registerService('Request', function($c){
+			$urlParams = $this['urlParams'];
+			if (defined('PHPUNIT_RUN') && PHPUNIT_RUN
+					&& in_array('fakeinput', stream_get_wrappers())
+			) {
+				$stream = 'fakeinput://data';
+			} else {
+				$stream = 'php://input';
+			}
+				
+			return new Request(
+					[
+							'get' => $_GET,
+							'post' => $_POST,
+							'files' => $_FILES,
+							'server' => $_SERVER,
+							'env' => $_ENV,
+							'cookies' => $_COOKIE,
+							'method' => (isset($_SERVER) && isset($_SERVER['REQUEST_METHOD']))
+							? $_SERVER['REQUEST_METHOD']
+							: null,
+							'urlParams' => $urlParams
+					],
+					$this->getSecureRandom(),
+					$this->getSystemConfig(),
+					$stream
+			);
+		});
+	
+		$this->registerService('SecureRandom', function(ApplicationContainer $c){
+			return new SecureRandom();
+		});
+	
+		$this->registerService('Protocol', function($c){
+			if(isset($_SERVER['SERVER_PROTOCOL'])){
+				return new Http($_SERVER, $_SERVER['SERVER_PROTOCOL']);
+			}else{
+				return new Http($_SERVER);
+			}
+		});
 	}
 	
 	public function getSystemConfig(){
 		return $this->query('SystemConfig');
-	}
-	
-	public function getApplicationConfig(){
-		return $this->query('ApplicationConfig');
 	}
 	
 	public function getDatabaseLayer(){

@@ -2,7 +2,7 @@
 namespace Commonhelp\Util\Security;
 
 use Commonhelp\App\Http\Request;
-use Commonhelp\App\SystemConfig;
+use Commonhelp\Config\Config;
 
 class TrustedDomainHelper{
 	
@@ -12,7 +12,7 @@ class TrustedDomainHelper{
 	/**
 	 * @param SecurityConfig $config
 	 */
-	function __construct(SystemConfig $config) {
+	function __construct(Config $config) {
 		$this->config = $config;
 	}
 	

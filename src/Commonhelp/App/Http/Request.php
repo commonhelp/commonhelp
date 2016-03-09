@@ -3,9 +3,10 @@ namespace Commonhelp\App\Http;
 
 use ArrayAccess;
 use Countable;
-use Commonhelp\App\SystemConfig;
 use Commonhelp\Util\Security\SecureRandom;
 use Commonhelp\Util\Security\StringUtils;
+use Commonhelp\Util\Security\TrustedDomainHelper;
+use Commonhelp\Config\Config;
 
 /**
  * Class for accessing variables in the request.
@@ -50,6 +51,8 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	/** @var bool */
 	protected $contentDecoded = false;
 	
+	protected $baseUrl;
+	
 	/**
 	 * @param array $vars An associative array with the following optional values:
 	 *        - array 'urlParams' the parameters which were matched from the URL
@@ -65,7 +68,7 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	 * @param string $stream
 	 * @see http://www.php.net/manual/en/reserved.variables.php
 	 */
-	public function __construct(array $vars=array(), SecureRandom $secureRandom = null, SystemConfig $config, $stream='php://input') {
+	public function __construct(array $vars=array(), SecureRandom $secureRandom = null, Config $config, $stream='php://input') {
 		$this->inputStream = $stream;
 		$this->items['params'] = array();
 		$this->secureRandom = $secureRandom;
@@ -84,6 +87,7 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 				$this->items['urlParams'],
 				$this->items['params']
 		);
+		$this->baseUrl = null;
 	}
 	
 	/**
@@ -649,6 +653,7 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	 * @return string Server host
 	 */
 	public function getServerHost() {
+		
 		// overwritehost is always trusted
 		$host = $this->getOverwriteHost();
 		if ($host !== null) {
@@ -660,16 +665,92 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 		// are defined
 		// If no trusted domain is provided the first trusted domain is returned
 		$trustedDomainHelper = new TrustedDomainHelper($this->config);
-		if ($trustedDomainHelper->isTrustedDomain($host)) {
+		if($trustedDomainHelper->isTrustedDomain($host)){
 			return $host;
-		} else {
-			$trustedList = $this->config->getSystemValue('trusted_domains', []);
+		}else{
+			$trustedList = $this->config->getTrustedDomains();
 			if(!empty($trustedList)) {
 				return $trustedList[0];
 			} else {
 				return '';
 			}
 		}
+	}
+	
+	public function getHost(){
+		return $this->getInsecureServerHost();
+	}
+	
+	public function getScheme(){
+		return $this->isSecure() ? 'https' : 'http';
+	}
+	
+	public function isSecure(){
+		$https = array_key_exists('HTTPS', $this->server) ? $this->server['HTTPS'] : 'off';
+		return !empty($https) && 'off' !== strtolower($https);
+	}
+	
+	public function getPort(){
+		return $this->server['SERVER_PORT'];
+	}
+	
+	
+	public function getBaseUrl(){
+		pr($this->server);
+		if($this->baseUrl === null){
+			$this->baseUrl = $this->prepareBaseUrl();
+		}
+		
+		return $this->baseUrl;
+	}
+	
+	protected function prepareBaseUrl(){
+		$filename = basename($this->server['SCRIPT_FILENAME']);
+		if(basename($this->server['SCRIPT_NAME']) === $filename){
+			$baseUrl = $this->server['SCRIPT_NAME'];
+		}else if(basename($this->server['PHP_SELF']) === $filename){
+			$baseUrl = $this->server['PHP_SELF'];
+		}else if(basename($this->server['ORIG_SCRIPT_NAME']) === $filename){
+			$baseUrl = $this->server['ORIG_SCRIPT_NAME'];
+		}else{
+			$path = array_key_exists('PHP_SELF', $this->server) ? $this->server['PHP_SELF'] : '';
+			$file = array_key_exists('SCRIPT_FILENAME', $this->server) ? $this->server['SCRIPT_FILENAME'] : '';
+			$segs = explode('/', trim($file, '/'));
+			$segs = array_reverse($segs);
+			$index = 0;
+			$last = count($segs);
+			$baseUrl = '';
+			do{
+				$set = $segs[$index];
+				$baseUrl = '/' . $seg . $baseUrl;
+				++$index;
+			}while($last > $index && (false !== $pos = strpos($path, $baseUrl)) && 0 != $pos);
+		}
+		
+		$requestUri = $this->getRequestUri();
+		if($baseUrl && false !== $prefix = $this->getUrlencodedPrefix($requestUri, $baseUrl)){
+			return $prefix;
+		}
+			
+		if($baseUrl && false !== $prefix = $this->getUrlencodedPrefix($requestUri, rtrim(dirname($baseUrl), '/' . DIRECTORY_SEPARATOR))){
+			return rtrim($prefix, '/' . DIRECTORY_SEPARATOR);
+		}
+			
+		$truncateRequestUri = $requestUri;
+		if(false !== $pos = strpos($requestUri, '?')){
+			$truncateRequestUri = substr($requestUri, 0, $pos);
+		}
+			
+		$basename = basename($baseUrl);
+		if(empty($basename) || strpos(rawurldecode($truncateRequestUri), $basename)){
+			return '';
+		}
+			
+		if(strlen($requestUri) >= strlen($baseUrl) && (false !== $pos = strpos($requestUri, $baseUrl)) && $pos !== 0){
+			$baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
+		}
+			
+		return rtrim($baseUrl, '/' . DIRECTORY_SEPARATOR);
 	}
 	
 	/**
@@ -683,5 +764,16 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 			return $this->config->getOverwritehost();
 		}
 		return null;
+	}
+	
+	private function getUrlencodedPrefix($string, $prefix){
+		if(0 !== strpos(rawurldecode($string), $prefix)){
+			return false;
+		}
+		$len = strlen($prefix);
+		if(preg_match(sprintf('#^(%%[[:xdigit:]]{2}|.){%d}#', $len), $string, $match)){
+			return $match[0];
+		}
+		return false;
 	}
 }
