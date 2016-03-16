@@ -13,7 +13,6 @@ use Commonhelp\App\Http\Commonhelp\App\Http;
 abstract class WPController extends AbstractController implements WPIController{
 	
 	protected $action;
-	protected $templateDirs;
 	
 	public function __construct($appName, RequestInterface $request, $templateDirs = array()){
 		parent::__construct($appName, $request);
@@ -43,12 +42,8 @@ abstract class WPController extends AbstractController implements WPIController{
 		});
 	}
 	
-	protected function setTemplateDirs($templateDirs){
+	public function setTemplateDirs($templateDirs){
 		$this->templateDirs = $templateDirs;
-	}
-	
-	public function getTemplateDirs(){
-		return $this->templateDirs;
 	}
 	
 	public function setAction($action){
@@ -57,6 +52,16 @@ abstract class WPController extends AbstractController implements WPIController{
 	
 	public function getAction(){
 		return $this->action;
+	}
+	
+	public function render($response, $format = 'json'){
+		if(array_key_exists($format, $this->responders)) {
+			$responder = $this->responders[$format];
+			return $responder($response);
+		} else {
+			throw new RenderException('No responder registered for format ' .
+					$format . '!');
+		}
 	}
 	
 }

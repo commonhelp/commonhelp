@@ -37,4 +37,8 @@ class Xml implements ParserInterface{
 	public function getSupportedExtensions(){
 		return array('xml');
 	}
+	
+	public function write($path, array $configs){
+	
+	}
 }

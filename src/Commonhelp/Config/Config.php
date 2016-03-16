@@ -3,6 +3,8 @@
 namespace Commonhelp\Config;
 
 use Commonhelp\Util\Collections\ArrayCollection;
+use Commonhelp\Config\Configurator\Parser\ParserInterface;
+
 abstract class Config extends ArrayCollection{
 	
 	protected $validMethodList;
@@ -22,6 +24,9 @@ abstract class Config extends ArrayCollection{
 			$parameter = substr($name, 3);
 			if ($prefix === 'set' && isset($arguments[0])) {
 				$this->container[$parameter] = $arguments[0];
+				if($this->writeable){
+					$this->write();
+				}
 				return $this;
 			} elseif ($prefix === 'get') {
 				$default_value = isset($arguments[0]) ? $arguments[0] : null;
@@ -31,6 +36,8 @@ abstract class Config extends ArrayCollection{
 			throw new \RuntimeException('Invalid configuration method');
 		}
 	}
+	
+	abstract public function write();
 	
 	public function isValidMethod($method){
 		return in_array($method, $this->validMethodList);

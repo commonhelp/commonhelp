@@ -8,6 +8,7 @@ class CheckboxType extends AbstractType{
 	
 	public function __construct(){
 		$this->acceptedTag = array('input');
+		$this->template = 'choice';
 	}
 	
 	public function getName(){

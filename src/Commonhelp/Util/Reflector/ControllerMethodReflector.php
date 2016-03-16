@@ -19,8 +19,12 @@ class ControllerMethodReflector{
 	 * @param object $object an object or classname
 	 * @param string $method the method which we want to inspect
 	 */
-	public function reflect($object, $method){
-		$reflection = new \ReflectionMethod($object, $method);
+	public function reflect($object, $method=null){
+		if($object instanceof \ReflectionMethod && $method == null){
+			$reflection = $object;
+		}else{
+			$reflection = new \ReflectionMethod($object, $method);
+		}
 		$docs = $reflection->getDocComment();
 		// extract everything prefixed by @ and first letter uppercase
 		preg_match_all('/@([A-Z]\w+)/', $docs, $matches);

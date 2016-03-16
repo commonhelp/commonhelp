@@ -73,7 +73,7 @@ class Dispatcher{
 				$headers = $this->request->getHeader('Accept');
 				$format = $controller->getResponderByHTTPHeader($headers);
 			}
-			$response = $controller->render($response, $format);
+			$response = $controller->buildResponse($response, $format);
 		}
 		return $response;
 	}

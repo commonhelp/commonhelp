@@ -19,4 +19,6 @@ interface ParserInterface{
 	*/
 	public function getSupportedExtensions();
 	
+	public function write($path, array $configs);
+	
 }

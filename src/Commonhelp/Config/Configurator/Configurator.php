@@ -67,10 +67,18 @@ class Configurator implements \ArrayAccess, ConfiguratorInterface, \Iterator{
 			$parser = $this->getParser($extension);
 			$this->data = array_replace_recursive($this->data, (array) $parser->parse($path));
 			$configClass = $c[Inflector::classify($info['filename']) . 'Config'];
+			$configClass->setFile($path);
+			$configClass->setParser($parser);
 			foreach((array) $parser->parse($path) as $key => $value){
 				$setter = 'set' . Inflector::camelize($key, '-');
 				if(method_exists($configClass, $setter) || $configClass->isValidMethod($setter)){
+					if($oldWriteable = $configClass->isWriteable()){
+						$configClass->setNotWriteable();
+					}
 					$configClass->$setter($value);
+					if($oldWriteable){
+						$configClass->setWriteable();
+					}
 				}
 			}
 		}

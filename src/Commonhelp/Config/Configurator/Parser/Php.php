@@ -43,4 +43,8 @@ class Php implements ParserInterface{
 	public function getSupportedExtensions(){
 		return array('php');
 	}
+	
+	public function write($path, array $configs){
+	
+	}
 }

@@ -2,17 +2,15 @@
 
 namespace Commonhelp\Form\Builders;
 
+use Commonhelp\Form\FormBuilder;
+use Commonhelp\Form\FormElement;
+use Commonhelp\Event\EventDispatcherInterface;
+
 class Option extends FormBuilder{
 	
-	private $isSelected = false;
-	
-	public function __construct(){
+	public function __construct(EventDispatcherInterface $eventDispatcher){
+		parent::__construct($eventDispatcher);
 		$this->element = new FormElement('option', true);
-	}
-	
-	public function setSelected(){
-		$this->isSelected = true;
-		$this->element->setAttributes(array('selected' => ''));
 	}
 	
 }

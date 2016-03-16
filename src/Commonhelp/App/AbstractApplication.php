@@ -3,7 +3,8 @@ namespace Commonhelp\App;
 
 use Commonhelp\DI\SimpleContainer;
 use Commonhelp\App\Exception\ApplicationException;
-abstract class AbstractApplication{
+
+abstract class AbstractApplication implements ApplicationInterface{
 
 	protected $container;
 	
@@ -22,9 +23,5 @@ abstract class AbstractApplication{
 	public function getContainer(){
 		return $this->container;
 	}
-	
-	abstract public static function main($controllerName, $methodName, SimpleContainer $container, array $urlParams = null);
-	
-	abstract public static function part($controllerName, $methodName, SimpleContainer $container, array $urlParams = null);
 
 }

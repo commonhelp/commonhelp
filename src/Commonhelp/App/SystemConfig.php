@@ -6,6 +6,8 @@ use Commonhelp\Config\Config;
 */
 class SystemConfig extends Config{
 	
+	protected $writeable = false;
+	
 	protected $validMethodList = array(
 		'getSecret',
 		'setSecret',
@@ -29,6 +31,8 @@ class SystemConfig extends Config{
 		'setSystemValue'
 	);
 	
-	
+	public function write(){
+		return null;
+	}
 	
 }

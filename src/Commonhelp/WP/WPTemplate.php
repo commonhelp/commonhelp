@@ -24,7 +24,7 @@ class WPTemplate extends TemplateBase{
 		}
 		$this->controller = $controller;
 		try{
-			list($path, $name) = $this->findTemplate($controller->getAppName(), $this->methodName);
+			list($path, $name) = $this->findTemplate($this->methodName, $controller->getAppName());
 			$this->path = $path;
 			$this->template = $name;
 		}catch(TemplateNotFoundException $e){
@@ -47,7 +47,7 @@ class WPTemplate extends TemplateBase{
 		return $this->templateDirs;
 	}
 
-	protected function findTemplate($app, $name){
+	protected function findTemplate($name, $app=''){
 		if( $app !== '' ) {
 			$dirs = $this->getWPAppTemplateDirs($app);
 		} else {

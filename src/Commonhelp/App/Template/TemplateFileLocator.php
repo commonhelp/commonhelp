@@ -8,12 +8,15 @@ class TemplateFileLocator {
 
 	protected $dirs;
 	private $path;
+	
+	private $extension;
 
 	/**
 	 * @param string[] $dirs
 	 */
-	public function __construct( $dirs ) {
+	public function __construct( $dirs, $extension = '.php' ) {
 		$this->dirs = $dirs;
+		$this->extension = $extension;
 	}
 
 	/**
@@ -26,13 +29,15 @@ class TemplateFileLocator {
 			throw new \InvalidArgumentException('Empty template name');
 		}
 		foreach($this->dirs as $dir) {
-			$file = $dir.$template.'.php';
+			$file = $dir.$template. $this->extension;
 			if (is_file($file)) {
 				$this->path = $dir;
 				return $file;
 			}
 		}
-		throw new TemplateNotFoundException('template not found template: '.$template.' in '.print_r($this->dirs, true));
+		throw new TemplateNotFoundException(
+				'template not found template: '.$template.'. ' . $this->extension . ' in '.print_r($this->dirs, true)
+		);
 
 	}
 

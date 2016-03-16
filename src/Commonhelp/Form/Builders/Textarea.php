@@ -2,11 +2,15 @@
 
 namespace Commonhelp\Form\Builders;
 
+use Commonhelp\Form\FormBuilder;
+use Commonhelp\Form\FormElement;
+use Commonhelp\Event\EventDispatcherInterface;
+
 class Textarea extends FormBuilder{
 	
-	public function __construct(){
+	public function __construct(EventDispatcherInterface $eventDispatcher){
+		parent::__construct($eventDispatcher);
 		$this->element = new FormElement('textarea');
-		$this->element->valueInside();
 	}
 	
 }

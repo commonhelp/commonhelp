@@ -32,4 +32,8 @@ class Yaml implements ParserInterface{
 	public function getSupportedExtensions(){
 		return array('yaml', 'yml');
 	}
+	
+	public function write($path, array $configs){
+	
+	}
 }

@@ -4,7 +4,7 @@ namespace Commonhelp\App\Template;
 
 use Commonhelp\App\AbstractController;
 use Commonhelp\App\Exception\TemplateNullException;
-abstract class TemplateBase{
+abstract class TemplateBase implements TemplateInterface{
 	
 	protected $template;
 	protected $vars;
@@ -16,7 +16,7 @@ abstract class TemplateBase{
 		$this->template = $template;
 	}
 	
-	public function setTemplate(){
+	public function setTemplate($template){
 		$this->template = $template;
 	}
 	
@@ -39,7 +39,7 @@ abstract class TemplateBase{
 		return $this->load($this->template);
 	}
 	
-	public function assign( $key, $value) {
+	public function assign($key, $value) {
 		$this->vars[$key] = $value;
 		return true;
 	}
@@ -74,11 +74,8 @@ abstract class TemplateBase{
 		return 'HTTP/1.1';
 	}
 	
-	abstract protected function findTemplate($app, $name);
+	abstract protected function findTemplate($name, $app='');
 	
 	abstract public function inc($template, $additionalParams);
-	
-	abstract public static function renderError(AbstractController $controller, $error_msg);
-	abstract public static function renderException(AbstractController $controller, \Exception $exception);
 	
 }

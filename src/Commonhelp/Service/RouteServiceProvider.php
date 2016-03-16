@@ -11,17 +11,16 @@ class RouteServiceProvider implements ServiceProviderInterface{
 	
 	
 	public function register(Container $container){
-		$container['routes'] = function($container){
+		$container['router'] = function($container){
 			$locator = $container['locator'];
 			$configurator = $container['config'];
 			if($locator === null){
 				throw new \RuntimeException('Locator must be initialized to use routers');
 			}
 			
-			$resource = $locator->findResource('routes://routes.json', true, true);
+			$resource = $locator->findResource('routes://system.json', true, true);
 			$info = pathinfo($resource);
-			$router = new Router($configurator->getParser($info['extension']), $resource, '/');
-			dump($router);
+			return new Router($configurator->getParser($info['extension']), $resource, '/');
 		};
 	}
 	

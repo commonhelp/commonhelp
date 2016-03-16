@@ -5,6 +5,7 @@ use Closure;
 use ReflectionClass;
 use Commonhelp\DI\IContainer;
 use Commonhelp\DI\Exception\QueryException;
+use Commonhelp\Util\Reflector\ControllerMethodReflector;
 
 class SimpleContainer extends Container implements IContainer {
 	
@@ -12,21 +13,30 @@ class SimpleContainer extends Container implements IContainer {
 	 * @param ReflectionClass $class the class to instantiate
 	 * @return \stdClass the created class
 	 */
-	private function buildClass(ReflectionClass $class) {
+	private function buildClass(ReflectionClass $class){
 		$constructor = $class->getConstructor();
-		if ($constructor === null) {
+		if($constructor === null){
 			return $class->newInstance();
-		} else {
+		}else{
 			$parameters = [];
-			foreach ($constructor->getParameters() as $parameter) {
-				$parameterClass = $parameter->getClass();
-				// try to find out if it is a class or a simple parameter
-				if ($parameterClass === null) {
-					$resolveName = $parameter->getName();
-				} else {
-					$resolveName = $parameterClass->name;
+			foreach($constructor->getParameters() as $parameter){
+				try{
+					$parameterClass = $parameter->getClass();
+					// try to find out if it is a class or a simple parameter
+					if ($parameterClass === null) {
+						$resolveName = $parameter->getName();
+					} else {
+						$resolveName = $parameterClass->name;
+					}
+					
+					$parameters[] = $this->query($resolveName);
+				}catch(QueryException $ex){
+					
+					$methodReflector = new ControllerMethodReflector();
+					$methodReflector->reflect($constructor);
+					$resolveName = $methodReflector->getType($parameter->getName());
+					$parameters[] = $this->query($resolveName);
 				}
-				$parameters[] = $this->query($resolveName);
 			}
 			return $class->newInstanceArgs($parameters);
 		}
@@ -49,7 +59,7 @@ class SimpleContainer extends Container implements IContainer {
 				throw new QueryException($baseMsg .
 						' Class can not be instantiated');
 			}
-		} catch(ReflectionException $e) {
+		} catch(\ReflectionException $e) {
 			throw new QueryException($baseMsg . ' ' . $e->getMessage());
 		}
 	}

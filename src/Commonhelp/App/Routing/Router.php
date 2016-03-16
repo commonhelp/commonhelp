@@ -6,6 +6,8 @@ use Symfony\Component\Routing\RequestContext;
 use Psr\Log\LoggerInterface;
 use Commonhelp\App\Http\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Route;
 
 class Router{
 	
@@ -33,6 +35,8 @@ class Router{
 				'matcher_class' => 'Symfony\\Component\\Routing\\Matcher\\UrlMatcher',
 				'matcher_base_class' => 'Symfony\\Component\\Routing\\Matcher\\UrlMatcher',
 		);
+		
+		$this->collection = $this->getRouteCollection();
 	}
 	
 	public function generate($name, $parameters=array(), $referenceType=UrlGeneratorInterface::ABSOLUTE_PATH){
@@ -41,7 +45,20 @@ class Router{
 	
 	public function getRouteCollection(){
 		if(null === $this->collection){
-			
+			$this->collection = new RouteCollection();
+			foreach($this->parser->parse($this->resource) as $route => $routes){
+				$routeObj = new Route(
+						$routes['path'],
+						isset($routes['defaults']) ? $routes['defaults'] : array(),
+						isset($routes['requirements']) ? $routes['requirements'] : array(),
+						isset($routes['options']) ? $routes['options'] : array(),
+						isset($routes['host']) ? $routes['host'] : '',
+						isset($routes['schemes']) ? $routes['schemes'] : array(),
+						isset($routes['methods']) ? $routes['methods'] : array(),
+						isset($routes['condition']) ? $routes['condition'] : ''
+				);
+				$this->collection->add($route, $routeObj);
+			}
 		}
 		
 		return $this->collection;
@@ -68,7 +85,7 @@ class Router{
 	}
 	
 	public function getMatcher(){
-		return $this->matcher = new $this->options['matcher_class'];
+		return $this->matcher = new $this->options['matcher_class']($this->getRouteCollection(), $this->context);
 	}
 	
 }

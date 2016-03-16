@@ -7,6 +7,7 @@ use Commonhelp\Util\Security\SecureRandom;
 use Commonhelp\Util\Security\StringUtils;
 use Commonhelp\Util\Security\TrustedDomainHelper;
 use Commonhelp\Config\Config;
+use Commonhelp\Util\Http\URLUtil;
 
 /**
  * Class for accessing variables in the request.
@@ -439,9 +440,9 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	 */
 	public function getRemoteAddress() {
 		$remoteAddress = isset($this->server['REMOTE_ADDR']) ? $this->server['REMOTE_ADDR'] : '';
-		$trustedProxies = $this->config->getSystemValue('trusted_proxies', []);
+		$trustedProxies = $this->config->getTrustedproxies([]);
 		if(is_array($trustedProxies) && in_array($remoteAddress, $trustedProxies)) {
-			$forwardedForHeaders = $this->config->getSystemValue('forwarded_for_headers', [
+			$forwardedForHeaders = $this->config->getForwardedforheaders([
 					'HTTP_X_FORWARDED_FOR'
 					// only have one default, so we cannot ship an insecure product out of the box
 			]);
@@ -465,7 +466,7 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	 * @return bool
 	 */
 	private function isOverwriteCondition($type = '') {
-		$regex = '/' . $this->config->getSystemValue('overwritecondaddr', '')  . '/';
+		$regex = '/' . $this->config->getOverwritecondaddr('')  . '/';
 		$remoteAddr = isset($this->server['REMOTE_ADDR']) ? $this->server['REMOTE_ADDR'] : '';
 		return $regex === '//' || preg_match($regex, $remoteAddr) === 1
 		|| $type !== 'protocol';
@@ -477,9 +478,9 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	 * @return string Server protocol (http or https)
 	 */
 	public function getServerProtocol() {
-		if($this->config->getSystemValue('overwriteprotocol') !== ''
+		if($this->config->getOverwriteprotocol() !== ''
 				&& $this->isOverwriteCondition('protocol')) {
-					return $this->config->getSystemValue('overwriteprotocol');
+					return $this->config->getOverwriteprotocol();
 				}
 				if (isset($this->server['HTTP_X_FORWARDED_PROTO'])) {
 					if (strpos($this->server['HTTP_X_FORWARDED_PROTO'], ',') !== false) {
@@ -525,7 +526,7 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	 */
 	public function getRequestUri() {
 		$uri = isset($this->server['REQUEST_URI']) ? $this->server['REQUEST_URI'] : '';
-		if($this->config->getSystemValue('overwritewebroot') !== '' && $this->isOverwriteCondition()) {
+		if($this->config->getOverwritewebroot() !== '' && $this->isOverwriteCondition()) {
 			$uri = $this->getScriptName() . substr($uri, strlen($this->server['SCRIPT_NAME']));
 		}
 		return $uri;
@@ -551,7 +552,7 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 		$pathInfo = $requestUri;
 		// strip off the script name's dir and file name
 		// FIXME: Sabre does not really belong here
-		list($path, $name) = \Sabre\HTTP\URLUtil::splitPath($scriptName);
+		list($path, $name) = URLUtil::splitPath($scriptName);
 		if (!empty($path)) {
 			if($path === $pathInfo || strpos($pathInfo, $path.'/') === 0) {
 				$pathInfo = substr($pathInfo, strlen($path));
@@ -600,7 +601,7 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	 */
 	public function getScriptName() {
 		$name = $this->server['SCRIPT_NAME'];
-		$overwriteWebRoot =  $this->config->getSystemValue('overwritewebroot');
+		$overwriteWebRoot =  $this->config->getOverwritewebroot();
 		if ($overwriteWebRoot !== '' && $this->isOverwriteCondition()) {
 			// FIXME: This code is untestable due to __DIR__, also that hardcoded path is really dangerous
 			$serverRoot = str_replace('\\', '/', substr(__DIR__, 0, -strlen('lib/private/appframework/http/')));
@@ -696,7 +697,6 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 	
 	
 	public function getBaseUrl(){
-		pr($this->server);
 		if($this->baseUrl === null){
 			$this->baseUrl = $this->prepareBaseUrl();
 		}
@@ -751,6 +751,23 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 		}
 			
 		return rtrim($baseUrl, '/' . DIRECTORY_SEPARATOR);
+	}
+	
+	public function getBasePath(){
+		$filename = basename($this->server['SCRIPT_FILENAME']);
+		$baseUrl = $this->getBaseUrl();
+		if (empty($baseUrl)) {
+			return '';
+		}
+		if (basename($baseUrl) === $filename) {
+			$basePath = dirname($baseUrl);
+		} else {
+			$basePath = $baseUrl;
+		}
+		if ('\\' === DIRECTORY_SEPARATOR) {
+			$basePath = str_replace('\\', '/', $basePath);
+		}
+		return rtrim($basePath, '/');
 	}
 	
 	/**

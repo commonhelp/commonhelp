@@ -34,4 +34,8 @@ class Json implements ParserInterface{
 	public function getSupportedExtensions(){
 		return array('json');
 	}
+	
+	public function write($path, array $configs){
+		file_put_contents($path, json_encode($configs, JSON_PRETTY_PRINT));
+	}
 }

@@ -58,6 +58,8 @@ use Commonhelp\Config\Config;
 */
 class RssConfig extends Config{
 	
+	protected $writeable = false;
+	
 	protected $validMethodList = array(
 		'setClientTimeout',
 		'setClientUserAgent',
@@ -112,5 +114,9 @@ class RssConfig extends Config{
 		'getFilterImageProxyCallback',
 		'getFilterImageProxyProtocol'
 	);
+	
+	public function write(){
+		return null;
+	}
 	
 }

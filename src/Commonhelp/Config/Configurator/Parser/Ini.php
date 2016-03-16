@@ -27,4 +27,8 @@ class Ini implements ParserInterface{
 		return array('ini');
 	}
 	
+	public function write($path, array $configs){
+		
+	}
+	
 }

@@ -10,7 +10,6 @@ class EventDispatcher implements EventDispatcherInterface{
 		if(null === $event){
 			$event = new Event();
 		}
-		
 		if(!isset($this->listeners[$eventName])){
 			return $event;
 		}
@@ -91,7 +90,7 @@ class EventDispatcher implements EventDispatcherInterface{
 		}
 	}
 	
-	private function sortListeners(){
+	private function sortListeners($eventName){
 		$this->sorted[$eventName] = array();
 		if (isset($this->listeners[$eventName])) {
 			krsort($this->listeners[$eventName]);

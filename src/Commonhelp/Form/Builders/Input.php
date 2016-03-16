@@ -2,17 +2,15 @@
 
 namespace Commonhelp\Form\Builders;
 
+use Commonhelp\Form\FormBuilder;
+use Commonhelp\Form\FormElement;
+use Commonhelp\Event\EventDispatcherInterface;
+
 class Input extends FormBuilder{
 	
-	private $tag = 'input';
-	
-	public function __construct(FormType $type){
-		$this->element = new FormElement('input', true);
-		$this->element->setType($type);
-	}
-	
-	public function setType(FileType $type){
-		$this->element->setType($type);
+	public function __construct(EventDispatcherInterface $eventDispatcher){
+		parent::__construct($eventDispatcher);
+		$this->element = new FormElement('input');
 	}
 	
 }
