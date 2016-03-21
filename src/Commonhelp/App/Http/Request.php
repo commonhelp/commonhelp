@@ -669,7 +669,7 @@ class Request implements \ArrayAccess, \Countable, RequestInterface {
 		if($trustedDomainHelper->isTrustedDomain($host)){
 			return $host;
 		}else{
-			$trustedList = $this->config->getTrustedDomains();
+			$trustedList = $this->config->getTrusteddomains();
 			if(!empty($trustedList)) {
 				return $trustedList[0];
 			} else {

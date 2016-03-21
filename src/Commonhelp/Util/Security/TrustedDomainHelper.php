@@ -44,7 +44,7 @@ class TrustedDomainHelper{
 	public function isTrustedDomain($domainWithPort) {
 		$domain = $this->getDomainWithoutPort($domainWithPort);
 		// Read trusted domains from config
-		$trustedList = $this->config->getTrustedDomains([]);
+		$trustedList = $this->config->getTrusteddomains([]);
 		if(!is_array($trustedList)) {
 			return false;
 		}

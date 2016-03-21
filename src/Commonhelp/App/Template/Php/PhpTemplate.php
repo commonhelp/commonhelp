@@ -134,12 +134,12 @@ class PhpTemplate extends TemplateBase implements \ArrayAccess{
 	}
 	
 	public function offsetExists($name){
-		return $this->h($name);
+		return $this->has($name);
 	}
 	
 	public function get($name){
 		if(!isset($this->helpers[$name])){
-			throw new \InvalidArgumentException(sprintf('The helper "%s" is note deined', $name));
+			throw new \InvalidArgumentException(sprintf('The helper "%s" is note defined', $name));
 		}
 		
 		return $this->helpers[$name];

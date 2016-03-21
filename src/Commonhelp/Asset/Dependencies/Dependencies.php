@@ -3,7 +3,9 @@ namespace Commonhelp\Asset\Dependencies;
 
 use Commonhelp\Asset\PackageInterface;
 use Commonhelp\Event\EventDispatcherInterface;
-use Commonhelp\ResourceLocator\UniformResourceLocator;
+use Commonhelp\Asset\FileGuesser\FileGuesserInterface;
+use Commonhelp\Asset\FileRegistry\FileRegistryInterface;
+
 
 abstract class Dependencies implements DependenciesInterface{
 	
@@ -21,9 +23,9 @@ abstract class Dependencies implements DependenciesInterface{
 	
 	/**
 	 * 
-	 * @var UniformResourceLocator
+	 * @var FileRegistryInterface
 	 */
-	protected $locator;
+	protected $registry;
 	
 	protected $dependencies;
 	protected $queue;
@@ -32,13 +34,13 @@ abstract class Dependencies implements DependenciesInterface{
 	 * 
 	 * @param PackageInterface $package
 	 * @param EventDispatcherInterface $eventDispatcher
-	 * @param UniformResourceLocator $locator
+	 * @param FileRegistryInterface $registry
 	 */
-	public function __construct(PackageInterface $package, EventDispatcherInterface $eventDispatcher, UniformResourceLocator $locator){
+	public function __construct(PackageInterface $package, EventDispatcherInterface $eventDispatcher, FileRegistryInterface $registry){
 		$this->package = $package;
 		$this->eventDispatcher = $eventDispatcher;
 		$this->dependencies = array();
-		$this->locator = $locator;
+		$this->registry = $registry;
 		$this->queue = new \SplQueue();
 	}
 	

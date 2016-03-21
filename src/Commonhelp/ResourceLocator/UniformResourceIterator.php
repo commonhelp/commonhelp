@@ -1,7 +1,7 @@
 <?php
 namespace Commonhelp\ResourceLocator;
 
-class UniformResourceLocator extends \FilesystemIterator{
+class UniformResourceIterator extends \FilesystemIterator{
 	
 	/**
 	 * @var FilesystemIterator

@@ -3,7 +3,7 @@ namespace Commonhelp\Asset\Dependencies;
 
 use Commonhelp\Asset\PackageInterface;
 use Commonhelp\Event\EventDispatcherInterface;
-use Commonhelp\ResourceLocator\UniformResourceLocator;
+use Commonhelp\Asset\FileRegistry\JavascriptRegistry;
 
 class Scripts extends Dependencies{
 	
@@ -13,10 +13,10 @@ class Scripts extends Dependencies{
 	 * 
 	 * @param PackageInterface $package
 	 * @param EventDispatcherInterface $eventDispatcher
-	 * @param UniformResourceLocator $locator
+	 * @param JavascriptRegistry $registry
 	 */
-	public function __construct(PackageInterface $package, EventDispatcherInterface $eventDispatcher, UniformResourceLocator $locator){
-		parent::__construct($package, $eventDispatcher, $locator);
+	public function __construct(PackageInterface $package, EventDispatcherInterface $eventDispatcher, JavascriptRegistry $registry){
+		parent::__construct($package, $eventDispatcher, $registry);
 		$this->inFooterQueue = new \SplQueue();
 	}
 	
@@ -33,8 +33,11 @@ class Scripts extends Dependencies{
 	}
 	
 	public function printScript(Dependency $dependency){
-		$this->setSources('js');
-		return $dependency->getHandle();
+		$versionStrategy = $this->package->getVersionStrategy();
+		$versionStrategy->setVersion($dependency->getVersion());
+		$path = $this->registry->get($dependency->getHandle())->getRelativePathName();
+		$src = $this->package->getUrl('js/'.$path);
+		return sprintf("<script type=\"type\javascript\" src=\"%s\"></script>\n", $src);
 	}
 	
 	public function enqueueInFooter($handle, $dependencies=array(), $version=null){

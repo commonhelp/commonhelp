@@ -9,6 +9,8 @@ abstract class TemplateBase implements TemplateInterface{
 	protected $template;
 	protected $vars;
 	
+	protected $globals;
+	
 	protected $path;
 	
 	public function __construct($template=null){
@@ -42,6 +44,14 @@ abstract class TemplateBase implements TemplateInterface{
 	public function assign($key, $value) {
 		$this->vars[$key] = $value;
 		return true;
+	}
+	
+	public function addGlobal($key, $value){
+		$this->globals[$key] = $value;
+	}
+	
+	public function getGlobals(){
+		return $this->globals;
 	}
 	
 	protected function load($file, $vars=array()){

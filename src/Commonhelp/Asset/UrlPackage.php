@@ -44,7 +44,7 @@ class UrlPackage extends Package{
 		$url = $this->getVersionStrategy()->applyVersion($path);
 		
 		if($url && '/' != $url[0]){
-			$utl = '/' . $url;
+			$url = '/' . $url;
 		}
 		
 		return $this->getBaseUrl($path) . $url;
@@ -66,7 +66,7 @@ class UrlPackage extends Package{
 	private function getSeelUrls($urls){
 		$sslUrls = array();
 		foreach($urls as $url){
-			if('https://' === substr($ul, 0, 8) || '//' === substr($url, 0, 2)){
+			if('https://' === substr($url, 0, 8) || '//' === substr($url, 0, 2)){
 				$sslUrls[] = $url;
 			}else if('http://' !== substr($url, 0, 7)){
 				throw new \InvalidArgumentException(sprintf('"%s" is not a valid URL', $url));
