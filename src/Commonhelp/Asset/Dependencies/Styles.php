@@ -51,8 +51,20 @@ class Styles extends Dependencies{
 		return sprintf("<link rel=\"stylesheet\" href=\"%s\">", $src);
 	}
 	
+	protected function printInlineStyle($style){
+		return sprintf("<style type=\"text/css\">\n%s\n</style>\n", $style);
+	}
+	
 	public function printLess(Dependency $dependency){
+		$versionStrategy = $this->package->getVersionStrategy();
+		$versionStrategy->setVersion($dependency->getVersion());
+		if($this->less->get($dependency->getHandle()) === null){
+			return $this->printStyle($dependency);
+		}
 		
+		$pathObj = $this->less->get($dependency->getHandle());
+		$compiler = new \lessc();
+		return $this->printInlineStyle($compiler->compileFile($pathObj->getPathName()));
 	}
 	
 	public function dequeue(){

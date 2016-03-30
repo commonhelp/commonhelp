@@ -7,6 +7,7 @@ use Commonhelp\App\Exception\DatabaseException;
 use Commonhelp\App\Http\Request;
 use Commonhelp\App\Http\Http;
 use Commonhelp\Util\Security\SecureRandom;
+
 class ApplicationContainer extends SimpleContainer{
 	
 	
@@ -94,6 +95,10 @@ class ApplicationContainer extends SimpleContainer{
 			}else{
 				return new Http($_SERVER);
 			}
+		});
+		
+		$this->registerService('Form', function($c){
+			return $this->resolve('Commonhelp\Form\FormCreator');
 		});
 	}
 	

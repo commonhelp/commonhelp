@@ -2,7 +2,6 @@
 namespace Commonhelp\App\Routing;
 
 use Commonhelp\Config\Configurator\Parser\ParserInterface;
-use Symfony\Component\Routing\RequestContext;
 use Psr\Log\LoggerInterface;
 use Commonhelp\App\Http\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -71,6 +70,10 @@ class Router{
 		return 
 			$this->generator = new $this->options['generator_class'](
 					$this->getRouteCollection(), $this->context, $this->logger);
+	}
+	
+	public function getContext(){
+		return $this->context;
 	}
 	
 	

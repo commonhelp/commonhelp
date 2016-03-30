@@ -34,7 +34,7 @@ class FormRegistry{
 		return $this->types[$name];
 	}
 	
-	public function getBuilder($builder, FormType $type){
+	public function getBuilder($builder, $fullName, FormType $type){
 		$name = '';
 		if(preg_match("/Builders\\\([^\d]+)/", $builder, $match)){
 			$name = Inflector::underscore($match[1]);
@@ -45,7 +45,7 @@ class FormRegistry{
 		
 		$builderObj = null;
 		if(class_exists($builder) && in_array('Commonhelp\Form\FormBuilder', class_parents($builder))){
-			$builderObj = new $builder(new EventDispatcher());
+			$builderObj = new $builder(new EventDispatcher(), $fullName);
 			$builderObj->setType($type);
 		}else{
 			throw new \InvalidArgumentException(sprintf('Could not load builder "%s"', $builder));

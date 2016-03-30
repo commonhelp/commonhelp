@@ -8,8 +8,8 @@ use Commonhelp\Event\EventDispatcherInterface;
 
 class Textarea extends FormBuilder{
 	
-	public function __construct(EventDispatcherInterface $eventDispatcher){
-		parent::__construct($eventDispatcher);
+	public function __construct(EventDispatcherInterface $eventDispatcher, $name = null){
+		parent::__construct($eventDispatcher, $name);
 		$this->element = new FormElement('textarea');
 	}
 	

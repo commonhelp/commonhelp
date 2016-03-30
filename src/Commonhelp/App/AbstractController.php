@@ -42,7 +42,7 @@ abstract class AbstractController implements SimpleContainerTraitInterface{
 		$this->appName = $app;
 	}
 	
-	public function generateUrl($route, $parameters=array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH){
+	public function generateUrl($route, $parameters=array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_URL){
 		if($this->container !== null){
 			return $this->container['router']->generate($route, $parameters, $referenceType);
 		}
@@ -148,6 +148,33 @@ abstract class AbstractController implements SimpleContainerTraitInterface{
 		
 		return false;
 	}
+	
+	/**
+	 * Creates and returns a FormCreator instance from the type of the form.
+	 *
+	 * @param string $factory    The fully qualified class name of the form factory
+	 * @param mixed  $data    The initial data for the form
+	 * @param array  $options Options for the form
+	 *
+	 * @return FormCreator
+	 */
+	protected function createForm($factory, $data=null, $options=array()){
+		return $this->get('Form')->create($factory, $data, $options);
+	}
+	
+	/**
+	 * Creates and returns a form creator instance.
+	 *
+	 * @param mixed $data    The initial data for the form
+	 * @param array $options Options for the form
+	 *
+	 * @return FormCreator
+	 */
+	protected function createFormBuilder($data = null, array $options = array()){
+		return $this->get('Form')->create(null, $data, $options);
+	}
+	
+	
 	
 	
 	public function getParams() {

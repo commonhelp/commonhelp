@@ -7,10 +7,23 @@ use Commonhelp\Form\Types\AbstractType;
 class FormElement implements \ArrayAccess, \IteratorAggregate{
 	
 	private $unreslovedChildren;
+	
 	private $children;
+	
 	private $attributes;
+	
+	/**
+	 * 
+	 * @var FormCreator
+	 */
 	private $creator;
+	
 	private $tag;
+	
+	/**
+	 * 
+	 * @var FormType
+	 */
 	private $type;
 	
 	public function __construct($tagName, $attributes = array()){
@@ -38,6 +51,9 @@ class FormElement implements \ArrayAccess, \IteratorAggregate{
 	}
 	
 	public function offsetGet($child){
+		if(isset($this->children[$child])){
+			return $this->children[$child];
+		}
 		if(isset($this->unreslovedChildren[$child])){
 			return $this->unreslovedChildren[$child];
 		}
@@ -50,7 +66,7 @@ class FormElement implements \ArrayAccess, \IteratorAggregate{
 	}
 	
 	public function offsetExists($child){
-		return array_key_exists($child, $this->unreslovedChildren);
+		return array_key_exists($child, $this->unreslovedChildren) || array_key_exists($child, $this->children);
 	}
 	
 	public function offsetUnset($child){

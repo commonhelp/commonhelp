@@ -8,7 +8,7 @@ use Commonhelp\Event\EventDispatcherInterface;
 
 class Option extends FormBuilder{
 	
-	public function __construct(EventDispatcherInterface $eventDispatcher){
+	public function __construct(EventDispatcherInterface $eventDispatcher, $name = null){
 		parent::__construct($eventDispatcher);
 		$this->element = new FormElement('option', true);
 	}

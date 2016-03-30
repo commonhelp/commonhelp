@@ -1,219 +1,132 @@
 <?php
 namespace Commonhelp\App\Http\Session;
 
-class Session implements \IteratorAggregate{
+use Commonhelp\App\Http\Session\Storage\SessionStorageInterface;
+use Commonhelp\App\Http\Session\Attribute\AttributeBagInterface;
+use Commonhelp\App\Http\Session\Flash\FlashBagInterface;
+use Commonhelp\App\Http\Session\Storage\NativeSessionStorage;
+use Commonhelp\App\Http\Session\Attribute\AttributeBag;
+use Commonhelp\App\Http\Session\Flash\FlashBag;
+
+class Session implements SessionInterface, \IteratorAggregate, \Countable{
 	
 	/**
-	 * @var bool
+	 * Storage driver
+	 * 
+	 * @var SessionStorageInterface
 	 */
-	protected $started = false;
-	/**
-	 * @var Session
-	 */
-	static $instance;
+	protected $storage;
+	
+	private $flashName;
+	
+	private $attributeName;
 	
 	/**
-	 * @param int    $lifetime Defaults to 1800 seconds.
-	 * @param string $path     Cookie path.
-	 * @throws \RuntimeException
+	 * Constructor
+	 * 
+	 * @param SessionStorageInterface $storage
+	 * @param AttributeBagInterface $attibutes
+	 * @param FlashBagInterface $flashes
 	 */
-	public function __construct($lifetime, $path){
+	public function __construct(SessionStorageInterface $storage = null, AttributeBagInterface $attibutes = null, FlashBagInterface $flashes = null){
+		$this->storage = $storage ?: new NativeSessionStorage();
+		$attibutes = $attibutes ?: new AttributeBag();
+		$this->attributeName = $attibutes->getName();
+		$this->registerBag($attibutes);
 		
-		// Session is a singleton.
-		if(isset(self::$instance)){
-			throw new \RuntimeException("Session has already been initialized.", 500);
-		}
-		
-		// Destroy any existing sessions started with session.auto_start
-		if(session_id()){
-			session_unset();
-			session_destroy();
-		}
-		
-		// Disable transparent sid support
-		ini_set('session.use_trans_sid', 0);
-		// Only allow cookies
-		ini_set('session.use_cookies', 1);
-		session_name('msF9kJcW');
-		session_set_cookie_params($lifetime, $path);
-		register_shutdown_function([$this, 'close']);
-		session_cache_limiter('nocache');
-		
-		if(isset($this->count)){
-			$this->count++;
-		}else{
-			$this->count = 1;
-		}
-		self::$instance = $this;
+		$flashes = $flashes ?: new FlashBag();
+		$this->flashName = $flashes->getName();
+		$this->registerBag($flashes);
 	}
 	
-	/**
-	 * Get current session instance.
-	 *
-	 * @return Session
-	 * @throws \RuntimeException
-	 */
-	public function instance(){
-		if(!isset(self::$instance)){
-			throw new \RuntimeException("Session hasn't been initialized.", 500);
-		}
-		return self::$instance;
-	}
-	
-	/**
-	 * Starts the session storage
-	 *
-	 * @return $this
-	 * @throws \RuntimeException
-	 */
 	public function start(){
-		if(!session_start()){
-			throw new \RuntimeException('Failed to start session.', 500);
-		}
-		$this->started = true;
-		return $this;
+		return $this->storage->start();
 	}
 	
-	/**
-	 * Get session ID
-	 *
-	 * @return string Session ID
-	 */
-	public function getId(){
-		return session_id();
+	public function has($name){
+		return $this->storage->getBag($this->attributeName)->has($name);
 	}
 	
-	/**
-	 * Set session Id
-	 *
-	 * @param string $id Session ID
-	 *
-	 * @return $this
-	 */
-	public function setId($id){
-		session_id($id);
-		return $this;
+	public function get($name, $default = null){
+		return $this->storage->getBag($this->attributeName)->get($name, $default);
 	}
 	
-	/**
-	 * Get session name
-	 *
-	 * @return string
-	 */
-	public function getName(){
-		return session_name();
+	public function set($name, $value){
+		$this->storage->getBag($this->attributeName)->set($name, $value);
 	}
 	
-	/**
-	 * Set session name
-	 *
-	 * @param string $name
-	 *
-	 * @return $this
-	 */
-	public function setName($name){
-		session_name($name);
-		return $this;
-	}
-	
-	/**
-	 * Invalidates the current session.
-	 *
-	 * @return $this
-	 */
-	public function invalidate(){
-		$params = session_get_cookie_params();
-		setcookie(session_name(), '', time() - 42000,
-				$params['path'], $params['domain'],
-				$params['secure'], $params['httponly']
-		);
-		session_unset();
-		session_destroy();
-		$this->started = false;
-		return $this;
-	}
-	
-	/**
-	 * Force the session to be saved and closed
-	 *
-	 * @return $this
-	 */
-	public function close(){
-		if ($this->started) {
-			session_write_close();
-		}
-		$this->started = false;
-		return $this;
-	}
-	
-	/**
-	 * Checks if an attribute is defined.
-	 *
-	 * @param string $name The attribute name
-	 *
-	 * @return bool True if the attribute is defined, false otherwise
-	 */
-	public function __isset($name){
-		return isset($_SESSION[$name]);
-	}
-	
-	/**
-	 * Returns an attribute.
-	 *
-	 * @param string $name    The attribute name
-	 *
-	 * @return mixed
-	 */
-	public function __get($name){
-		return isset($_SESSION[$name]) ? $_SESSION[$name] : null;
-	}
-	
-	/**
-	 * Sets an attribute.
-	 *
-	 * @param string $name
-	 * @param mixed  $value
-	 */
-	public function __set($name, $value){
-		$_SESSION[$name] = $value;
-	}
-	
-	/**
-	 * Removes an attribute.
-	 *
-	 * @param string $name
-	 *
-	 * @return mixed The removed value or null when it does not exist
-	 */
-	public function __unset($name){
-		unset($_SESSION[$name]);
-	}
-	
-	/**
-	 * Returns attributes.
-	 *
-	 * @return array Attributes
-	 */
 	public function all(){
-		return $_SESSION;
+		return $this->storage->getBag($this->attributeName)->all();
 	}
 	
-	/**
-	 * Retrieve an external iterator
-	 *
-	 * @return \ArrayIterator Return an ArrayIterator of $_SESSION
-	 */
+	public function replace(array $attributes){
+		$this->storage->getBag($this->attributeName)->replace($attributes);
+	}
+	
+	public function remove($name){
+		return $this->storage->getBag($this->attributeName)->remove($name);
+	}
+	
+	public function clear(){
+		$this->storage->getBag($this->attributeName)->clear();
+	}
+	
+	public function isStarted(){
+		return $this->storage->isStarted();
+	}
+	
 	public function getIterator(){
-		return new \ArrayIterator($_SESSION);
+		return new \ArrayIterator($this->storage->getBag($this->attributeName)->all());
 	}
 	
-	/**
-	 * Checks if the session was started.
-	 *
-	 * @return Boolean
-	 */
-	public function started(){
-		return $this->started;
+	public function count(){
+		return count($this->storage->getBag($this->attributeName)->all());
+	}
+	
+	public function invalidate($lifetime = null){
+		$this->storage->clear();
+		
+		return $this->migrate(true, $lifetime);
+	}
+	
+	public function migrate($destroy=false, $lifetime=null){
+		return $this->storage->regenerate($destroy, $lifetime);
+	}
+	
+	public function save(){
+		$this->storage->save();
+	}
+	
+	public function getId(){
+		return $this->storage->getId();
+	}
+	
+	public function setId($id){
+		$this->storage->setId($id);
+	}
+	
+	public function getName(){
+		return $this->storage->getName();
+	}
+	
+	public function setName($name){
+		$this->storage->setName($name);
+	}
+	
+	public function getMetadataBag(){
+		return $this->storage->getMetadataBag();
+	}
+	
+	public function registerBag(SessionBagInterface $bag){
+		$this->storage->registerBag($bag);
+	}
+	
+	public function getBag($name){
+		return $this->storage->getBag($name);
+	}
+	
+	public function getFlashBag(){
+		return $this->getBag($this->flashName);
 	}
 	
 }

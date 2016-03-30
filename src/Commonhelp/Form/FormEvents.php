@@ -17,6 +17,10 @@ final class FormEvents{
 	
 	const AFTER_FORM = 'form.after_form';
 	
+	const BEFORE_FIELDSET = 'form.before_fieldset';
+	
+	const AFTER_FIELDSET = 'form.after_fieldset';
+	
 	const BEFORE_FIELD = 'form.before_field';
 	
 	const AFTER_FIELD = 'form.after_field';

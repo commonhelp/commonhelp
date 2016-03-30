@@ -75,6 +75,7 @@ class Hasher{
 				}
 				return false;
 	}
+	
 	/**
 	 * Verify V1 hashes
 	 * @param string $message Message to verify
