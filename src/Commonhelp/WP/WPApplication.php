@@ -50,7 +50,6 @@ abstract class WPApplication extends AbstractApplication{
 			$container['Request']->setUrlParameters($container['urlParams']);
 		}
 		$appName = $container['appName'];
-		
 		try {
 			$controller = $container->query($controllerName);
 		} catch(QueryException $e) {
@@ -66,7 +65,6 @@ abstract class WPApplication extends AbstractApplication{
 			$response
 		) = $dispatcher->dispatch($controller, $methodName);
 		$io = $container['Output'];
-		
 		if ($response instanceof ICallbackResponse) {
 			$response->callback($io);
 		} else if($response instanceof JsonResponse){

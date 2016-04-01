@@ -3,6 +3,6 @@
 namespace Commonhelp\DI\Exception;
 
 
-class QueryException extends \Exception{
+class QueryException extends \Exception implements NotFoundException{
  
 }

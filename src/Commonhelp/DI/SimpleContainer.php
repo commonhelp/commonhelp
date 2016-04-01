@@ -5,9 +5,10 @@ use Closure;
 use ReflectionClass;
 use Commonhelp\DI\IContainer;
 use Commonhelp\DI\Exception\QueryException;
-use Commonhelp\Util\Reflector\ControllerMethodReflector;
+use Commonhelp\DI\Annotations\AnnotationsBuilder;
+use Commonhelp\DI\Annotations\TypeAnnotations;
 
-class SimpleContainer extends Container implements IContainer {
+class SimpleContainer extends Container {
 	
 	/**
 	 * @param ReflectionClass $class the class to instantiate
@@ -15,6 +16,7 @@ class SimpleContainer extends Container implements IContainer {
 	 */
 	private function buildClass(ReflectionClass $class){
 		$constructor = $class->getConstructor();
+		$annotations = new AnnotationsBuilder($class);
 		if($constructor === null){
 			return $class->newInstance();
 		}else{
@@ -32,9 +34,9 @@ class SimpleContainer extends Container implements IContainer {
 					$parameters[] = $this->query($resolveName);
 				}catch(QueryException $ex){
 					
-					$methodReflector = new ControllerMethodReflector();
-					$methodReflector->reflect($constructor);
-					$resolveName = $methodReflector->getType($parameter->getName());
+					$resolveName = $annotations->get('Type', function(TypeAnnotations $annotations) use($constructor, $parameter){
+						return $annotations->getType($parameter->getName(), $constructor->getName());
+					});
 					$parameters[] = $this->query($resolveName);
 				}
 			}
@@ -130,7 +132,7 @@ class SimpleContainer extends Container implements IContainer {
 	 * @param string $target the target that should be resolved instead
 	 */
 	public function registerAlias($alias, $target) {
-		$this->registerService($alias, function (IContainer $container) use ($target) {
+		$this->registerService($alias, function (ContainerInterface $container) use ($target) {
 			return $container->query($target);
 		}, false);
 	}

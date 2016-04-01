@@ -1,36 +1,34 @@
 <?php
-namespace Commonhelp\Util\Reflector;
+namespace Commonhelp\Util\Annotations;
 
-class ControllerMethodReflector{
+class ControllerMethodAnnotations extends AbstractAnnotations{
 	
-
-	private $annotations;
 	private $types;
 	private $parameters;
 	private $responder;
 	
-	public function __construct() {
+	private $method;
+	
+	public function __construct(){
 		$this->types = array();
 		$this->parameters = array();
-		$this->annotations = array();
+	}
+	
+	public function initMethod($object, $method){
+		parent::init($object);
+		$this->method = $method;
 	}
 	
 	/**
 	 * @param object $object an object or classname
 	 * @param string $method the method which we want to inspect
 	 */
-	public function reflect($object, $method=null){
-		if($object instanceof \ReflectionMethod && $method == null){
-			$reflection = $object;
-		}else{
-			$reflection = new \ReflectionMethod($object, $method);
-		}
-		$docs = $reflection->getDocComment();
+	public function parse(){
 		// extract everything prefixed by @ and first letter uppercase
-		preg_match_all('/@([A-Z]\w+)/', $docs, $matches);
+		preg_match_all('/@([A-Z]\w+)/', $this->get($this->method), $matches);
 		$this->annotations = $matches[1];
 		// extract type parameter information
-		preg_match_all('/@param\h+(?P<type>\w+)\h+\$(?P<var>\w+)/', $docs, $matches);
+		preg_match_all('/@param\h+(?P<type>\w+)\h+\$(?P<var>\w+)/', $this->get($this->method), $matches);
 		// this is just a fix for PHP 5.3 (array_combine raises warning if called with
 		// two empty arrays
 		if($matches['var'] === array() && $matches['type'] === array()) {
@@ -38,7 +36,9 @@ class ControllerMethodReflector{
 		} else {
 			$this->types = array_combine($matches['var'], $matches['type']);
 		}
+		
 		// get method parameters
+		$reflection = $this->reflector->getMethod($this->method);
 		foreach ($reflection->getParameters() as $param) {
 			if($param->isOptional()) {
 				$default = $param->getDefaultValue();
@@ -48,7 +48,7 @@ class ControllerMethodReflector{
 			$this->parameters[$param->name] = $default;
 		}
 		// extract return parameter information
-		preg_match_all("/@responder\h+(?P<responder>\w+)/", $docs, $matches);
+		preg_match_all("/@responder\h+(?P<responder>\w+)/", $this->get($this->method), $matches);
 		if($matches['responder'] === array()){
 			$this->responder = null;
 		}else{

@@ -21,8 +21,7 @@ class ApplicationContainer extends SimpleContainer{
 		$this->registerService('SystemConfig', function($c){
 			return new SystemConfig();
 		});
-		
-		$this->registerAlias('ControllerMethodReflector', 'Commonhelp\Util\Reflector\ControllerMethodReflector');
+		$this->registerAlias('ControllerMethodAnnotations', 'Commonhelp\Util\Annotations\ControllerMethodAnnotations');
 		
 		$middleWares = &$this->middleWares;
 		$this->registerService('MiddlewareDispatcher', function($c) use (&$middleWares) {

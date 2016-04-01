@@ -117,6 +117,7 @@ class FormCreator implements \ArrayAccess{
 	public function createNamedBuilder($name, $builder, $type, $options){
 		$type = $this->registry->getType($type);
 		$builder = $this->registry->getBuilder($builder, $name, $type);
+		$builder->setCreator($this);
 		$options = array_merge($options, array('name' => $name));
 		$builder->setAttributes($options);
 		

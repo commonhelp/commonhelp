@@ -15,6 +15,12 @@ abstract class FormBuilder{
 	protected $action;
 	protected $method;
 	
+	/**
+	 * 
+	 * @var FormCreator $creator
+	 */
+	protected $creator;
+	
 	private $modelTransformers = array();
 	private $viewTransformers = array();
 	
@@ -28,6 +34,9 @@ abstract class FormBuilder{
 	
 	public function getName(){
 		return $this->name;
+	}
+	
+	public function setCreator(FormCreator $creator){
 	}
 	
 	public function setType(FormType $type){

@@ -1,7 +1,10 @@
 <?php
 namespace Commonhelp\DI;
 
-class Container implements \ArrayAccess{
+use Commonhelp\DI\Exception\RuntimeException;
+use Commonhelp\DI\Exception\InvalidArgumentException;
+
+class Container implements \ArrayAccess, ContainerInterface{
 	
 	private $values = array();
 	private $factories;
@@ -26,38 +29,18 @@ class Container implements \ArrayAccess{
 	}
 	
 	/**
-	 * Sets a parameter or an object.
+	 * Finds an entry of the container by its identifier and returns it.
 	 *
-	 * Objects must be defined as Closures.
+	 * @param string $id Identifier of the entry to look for.
 	 *
-	 * Allowing any PHP callable leads to difficult to debug problems
-	 * as function names (strings) are callable (creating a function with
-	 * the same name as an existing parameter would break your container).
+	 * @throws NotFoundException  No entry was found for this identifier.
+	 * @throws ContainerException Error while retrieving the entry.
 	 *
-	 * @param  string            $id    The unique identifier for the parameter or object
-	 * @param  mixed             $value The value of the parameter or a closure to define an object
-	 * @throws \RuntimeException Prevent override of a frozen service
+	 * @return mixed Entry.
 	 */
-	public function offsetSet($id, $value){
-		if (isset($this->frozen[$id])) {
-			throw new \RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
-		}
-		$this->values[$id] = $value;
-		$this->keys[$id] = true;
-	}
-	
-	/**
-	 * Gets a parameter or an object.
-	 *
-	 * @param string $id The unique identifier for the parameter or object
-	 *
-	 * @return mixed The value of the parameter or an object
-	 *
-	 * @throws \InvalidArgumentException if the identifier is not defined
-	 */
-	public function offsetGet($id){
+	public function get($id){
 		if (!isset($this->keys[$id])) {
-			throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+			throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
 		}
 		if (
 				isset($this->raw[$id])
@@ -78,6 +61,55 @@ class Container implements \ArrayAccess{
 	}
 	
 	/**
+	 * Returns true if the container can return an entry for the given identifier.
+	 * Returns false otherwise.
+	 *
+	 * `has($id)` returning true does not mean that `get($id)` will not throw an exception.
+	 * It does however mean that `get($id)` will not throw a `NotFoundException`.
+	 *
+	 * @param string $id Identifier of the entry to look for.
+	 *
+	 * @return boolean
+	 */
+	public function has($id){
+		return isset($this->keys[$id]);
+	}
+	
+	/**
+	 * Sets a parameter or an object.
+	 *
+	 * Objects must be defined as Closures.
+	 *
+	 * Allowing any PHP callable leads to difficult to debug problems
+	 * as function names (strings) are callable (creating a function with
+	 * the same name as an existing parameter would break your container).
+	 *
+	 * @param  string            $id    The unique identifier for the parameter or object
+	 * @param  mixed             $value The value of the parameter or a closure to define an object
+	 * @throws RuntimeException Prevent override of a frozen service
+	 */
+	public function offsetSet($id, $value){
+		if (isset($this->frozen[$id])) {
+			throw new RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
+		}
+		$this->values[$id] = $value;
+		$this->keys[$id] = true;
+	}
+	
+	/**
+	 * Gets a parameter or an object.
+	 *
+	 * @param string $id The unique identifier for the parameter or object
+	 *
+	 * @return mixed The value of the parameter or an object
+	 *
+	 * @throws InvalidArgumentException if the identifier is not defined
+	 */
+	public function offsetGet($id){
+		return $this->get($id);
+	}
+	
+	/**
 	 * Checks if a parameter or an object is set.
 	 *
 	 * @param string $id The unique identifier for the parameter or object
@@ -85,7 +117,7 @@ class Container implements \ArrayAccess{
 	 * @return bool
 	 */
 	public function offsetExists($id){
-		return isset($this->keys[$id]);
+		return $this->has($id);
 	}
 	
 	/**
@@ -109,11 +141,11 @@ class Container implements \ArrayAccess{
 	 *
 	 * @return callable The passed callable
 	 *
-	 * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
+	 * @throws RuntimeException Service definition has to be a closure of an invokable object
 	 */
 	public function factory($callable){
 		if (!is_object($callable) || !method_exists($callable, '__invoke')) {
-			throw new \InvalidArgumentException('Service definition is not a Closure or invokable object.');
+			throw new RuntimeException('Service definition is not a Closure or invokable object.');
 		}
 		$this->factories->attach($callable);
 		return $callable;
@@ -128,11 +160,11 @@ class Container implements \ArrayAccess{
 	 *
 	 * @return callable The passed callable
 	 *
-	 * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
+	 * @throws RuntimeException Service definition has to be a closure of an invokable object
 	 */
 	public function protect($callable){
 		if (!is_object($callable) || !method_exists($callable, '__invoke')) {
-			throw new \InvalidArgumentException('Callable is not a Closure or invokable object.');
+			throw new RuntimeException('Callable is not a Closure or invokable object.');
 		}
 		$this->protected->attach($callable);
 		return $callable;
@@ -168,17 +200,17 @@ class Container implements \ArrayAccess{
 	 *
 	 * @return callable The wrapped callable
 	 *
-	 * @throws \InvalidArgumentException if the identifier is not defined or not a service definition
+	 * @throws RuntimeException if the identifier is not defined or not a service definition
 	 */
 	public function extend($id, $callable){
 		if (!isset($this->keys[$id])) {
-			throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+			throw new RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
 		}
 		if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke')) {
-			throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
+			throw new RuntimeException(sprintf('Identifier "%s" does not contain an object definition.', $id));
 		}
 		if (!is_object($callable) || !method_exists($callable, '__invoke')) {
-			throw new \InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
+			throw new RuntimeException('Extension service definition is not a Closure or invokable object.');
 		}
 		$factory = $this->values[$id];
 		$extended = function ($c) use ($callable, $factory) {

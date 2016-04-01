@@ -19,7 +19,7 @@ class WPContainer extends ApplicationContainer{
 			return new WPDispatcher(
 				$c['Protocol'],
 				$c['MiddlewareDispatcher'],
-				$c['ControllerMethodReflector'],
+				$c['ControllerMethodAnnotations'],
 				$c['Request']
 			);
 		});

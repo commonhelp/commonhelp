@@ -5,18 +5,23 @@ use Commonhelp\App\Http\RequestInterface;
 use Commonhelp\App\Http\Http;
 use Commonhelp\App\Http\Response;
 use Commonhelp\App\Http\DataResponse;
-use Commonhelp\Util\Reflector\ControllerMethodReflector;
+use Commonhelp\Util\Annotations\ControllerMethodAnnotations;
 
 
 class Dispatcher{
 
 	protected $protocol;
 	protected $middlewareDispatcher;
+	
+	/**
+	 * 
+	 * @var ControllerMethodAnnotations;
+	 */
 	protected $reflector;
 	protected $request;
 	
 	public function __construct(Http $protocol, MiddlewareDispatcher $middlewareDispatcher, 
-			ControllerMethodReflector $reflector, RequestInterface $request){
+			ControllerMethodAnnotations $reflector, RequestInterface $request){
 		
 		$this->protocol = $protocol;
 		$this->middlewareDispatcher = $middlewareDispatcher;
@@ -28,7 +33,8 @@ class Dispatcher{
 	public function dispatch(AbstractController $controller, $methodName){
 		$out = array(null, array(), null);
 		try{
-			$this->reflector->reflect($controller, $methodName);
+			$this->reflector->initMethod($controller, $methodName);
+			$this->reflector->parse();
 			$this->middlewareDispatcher->beforeController($controller, $methodName);
 			$response = $this->executeController($controller, $methodName);
 		}catch(\Exception $exception){
