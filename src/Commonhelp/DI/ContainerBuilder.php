@@ -60,6 +60,10 @@ class ContainerBuilder{
 		return $this;
 	}
 	
+	public function setDefinitionCache(){
+		
+	}
+	
 	/**
 	 * 
 	 * @param bool $writeToFile
