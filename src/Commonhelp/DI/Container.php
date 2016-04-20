@@ -89,11 +89,15 @@ class Container implements \ArrayAccess, ContainerInterface{
 	 * @throws RuntimeException Prevent override of a frozen service
 	 */
 	public function offsetSet($id, $value){
-		if (isset($this->frozen[$id])) {
-			throw new RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
+		$this->set($id, $value);
+	}
+	
+	public function set($name, $value){
+		if (isset($this->frozen[$name])) {
+			throw new RuntimeException(sprintf('Cannot override frozen service "%s".', $name));
 		}
-		$this->values[$id] = $value;
-		$this->keys[$id] = true;
+		$this->values[$name] = $value;
+		$this->keys[$name] = true;
 	}
 	
 	/**

@@ -5,7 +5,7 @@ use Commonhelp\Config\Configurator\Exception\UnsupportedFormatException;
 use Commonhelp\Filesystem\Exception\FileNotFoundException;
 use Commonhelp\Filesystem\Exception\EmptyDirectoryException;
 use Commonhelp\Util\Inflector;
-use Commonhelp\DI\Container;
+use Commonhelp\DI\ContainerInterface;
 
 class Configurator implements \ArrayAccess, ConfiguratorInterface, \Iterator{
 	
@@ -56,7 +56,7 @@ class Configurator implements \ArrayAccess, ConfiguratorInterface, \Iterator{
 		return $paths;
 	}
 	
-	public function parse(Container $c){
+	public function parse(ContainerInterface $c){
 		foreach($this->paths as $path){
 			$info = pathinfo($path);
 			$parts = explode('.', $info['basename']);
@@ -66,7 +66,7 @@ class Configurator implements \ArrayAccess, ConfiguratorInterface, \Iterator{
 			}
 			$parser = $this->getParser($extension);
 			$this->data = array_replace_recursive($this->data, (array) $parser->parse($path));
-			$configClass = $c[Inflector::classify($info['filename']) . 'Config'];
+			$configClass = $c->get(Inflector::classify($info['filename']) . 'Config');
 			$configClass->setFile($path);
 			$configClass->setParser($parser);
 			foreach((array) $parser->parse($path) as $key => $value){

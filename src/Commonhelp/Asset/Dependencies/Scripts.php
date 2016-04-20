@@ -37,7 +37,7 @@ class Scripts extends Dependencies{
 		$versionStrategy->setVersion($dependency->getVersion());
 		$path = $this->registry->get($dependency->getHandle())->getRelativePathName();
 		$src = $this->package->getUrl('js/'.$path);
-		return sprintf("<script type=\"type\javascript\" src=\"%s\"></script>\n", $src);
+		return sprintf("<script type=\"text/javascript\" src=\"%s\"></script>\n", $src);
 	}
 	
 	public function enqueueInFooter($handle, $dependencies=array(), $version=null){

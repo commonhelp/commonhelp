@@ -149,6 +149,10 @@ class PhpTemplate extends TemplateBase implements \ArrayAccess{
 		return $this->get($name);
 	}
 	
+	public function setHelpers(array $helpers){
+		$this->helpers = $helpers;
+	}
+	
 	public function set(HelperInterface $helper, $alias = null){
 		$this->helpers[$helper->getName()] = $helper;
 		if(null !== $alias){

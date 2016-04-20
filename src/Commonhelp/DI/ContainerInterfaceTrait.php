@@ -1,11 +1,11 @@
 <?php
 namespace Commonhelp\DI;
 
-trait SimpleContainerTrait{
+trait ContainerInterfaceTrait{
 	
 	protected $container;
 	
-	public function setContainer(SimpleContainer $container=null){
+	public function setContainer(ContainerInterface $container){
 		$this->container = $container;
 	}
 	

@@ -74,7 +74,6 @@ class Styles extends Dependencies{
 	
 	public function lessdequeue(){
 		$dependency = parent::dequeue();
-		
 		return $this->printLess($dependency);
 	}
 	

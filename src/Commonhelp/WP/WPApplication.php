@@ -3,8 +3,8 @@ namespace Commonhelp\WP;
 
 use Commonhelp\App\AbstractApplication;
 use Commonhelp\WP\Exception\WPControllerNotFoundException;
-use Commonhelp\DI\SimpleContainer;
 use Commonhelp\App\Http\JsonResponse;
+use Commonhelp\DI\ContainerInterface;
 
 abstract class WPApplication extends AbstractApplication{
 
@@ -43,7 +43,7 @@ abstract class WPApplication extends AbstractApplication{
 		return $this->childUri;
 	}
 	
-	public static function main($controllerName, $methodName, SimpleContainer $container, array $urlParams = null){
+	public static function main($controllerName, $methodName, ContainerInterface $container, array $urlParams = null){
 		if (!is_null($urlParams)) {
 			$container['Request']->setUrlParameters($urlParams);
 		} else if (isset($container['urlParams']) && !is_null($container['urlParams'])) {
@@ -78,7 +78,7 @@ abstract class WPApplication extends AbstractApplication{
 		}
 	}
 	
-	public static function part($controllerName, $methodName, SimpleContainer $container, array $urlParams = null){
+	public static function part($controllerName, $methodName, ContainerInterface $container, array $urlParams = null){
 		if (!is_null($urlParams)) {
 			$container['Request']->setUrlParameters($urlParams);
 		} else if (isset($container['urlParams']) && !is_null($container['urlParams'])) {

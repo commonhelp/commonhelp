@@ -2,9 +2,9 @@
 namespace Commonhelp\Service;
 
 use Commonhelp\DI\ServiceProviderInterface;
-use Commonhelp\DI\Container;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Commonhelp\DI\ContainerInterface;
 
 class LoggerServiceProvider implements ServiceProviderInterface{
 	
@@ -14,11 +14,11 @@ class LoggerServiceProvider implements ServiceProviderInterface{
 		$this->file = $logFile;
 	}
 	
-	public function register(Container $container){
+	public function register(ContainerInterface $container){
 		$log = new Logger('commonhelp-log');
 		$log->pushHandler(new StreamHandler($this->file, Logger::DEBUG));
 		
-		$container['log'] = $log;
+		$container->set('log', $log);
 	}
 	
 }

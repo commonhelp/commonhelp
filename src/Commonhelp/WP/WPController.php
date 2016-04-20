@@ -13,10 +13,12 @@ use Commonhelp\App\Http\Commonhelp\App\Http;
 abstract class WPController extends AbstractController implements WPIController{
 	
 	protected $action;
+	protected $wpAjaxData;
 	
 	public function __construct($appName, RequestInterface $request, $templateDirs = array()){
 		parent::__construct($appName, $request);
 		$this->action = null;
+		$this->wpAjaxData = array();
 		$this->templateDirs = $templateDirs;
 		$this->registerResponder('template', function($response){
 			try{
@@ -35,6 +37,9 @@ abstract class WPController extends AbstractController implements WPIController{
 				'action'	=> $this->getAction(),
 				'data'		=> $template->render()
 			);
+			if(!empty($this->wpAjaxData)){
+				$jsonData['extra'] = $this->wpAjaxData;
+			}
 			return new JsonResponse($jsonData);
 		});
 		$this->registerResponder('string', function($response){
@@ -52,6 +57,10 @@ abstract class WPController extends AbstractController implements WPIController{
 	
 	public function getAction(){
 		return $this->action;
+	}
+	
+	public function setWpAjaxData($value, $data){
+		$this->wpAjaxData[$value] = $data;
 	}
 	
 	public function render($response, $format = 'json'){

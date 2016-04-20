@@ -6,16 +6,18 @@ use Commonhelp\App\Http\DataResponse;
 use Commonhelp\App\Http\JsonResponse;
 use Commonhelp\App\Http\Commonhelp\App\Http;
 use Commonhelp\App\Exception\RenderException;
-use Commonhelp\DI\SimpleContainerTraitInterface;
-use Commonhelp\DI\SimpleContainerTrait;
 use Commonhelp\App\Http\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Commonhelp\App\Http\TemplateResponse;
 use Commonhelp\App\Template\Php\PhpTemplate;
+use Commonhelp\DI\ContainerInterfaceTrait;
+use Commonhelp\DI\ContainerInterfaceTraitInterface;
+use Commonhelp\Form\FormCreator;
+use Commonhelp\App\Template\TemplateInterface;
 
-abstract class AbstractController implements SimpleContainerTraitInterface{
+abstract class AbstractController implements ContainerInterfaceTraitInterface{
 	
-	use SimpleContainerTrait;
+	use ContainerInterfaceTrait;
 	
 	protected $appName;
 	
@@ -44,7 +46,7 @@ abstract class AbstractController implements SimpleContainerTraitInterface{
 	
 	public function generateUrl($route, $parameters=array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_URL){
 		if($this->container !== null){
-			return $this->container['router']->generate($route, $parameters, $referenceType);
+			return $this->get('router')->generate($route, $parameters, $referenceType);
 		}
 		
 		return null;
@@ -101,7 +103,11 @@ abstract class AbstractController implements SimpleContainerTraitInterface{
 			return null;
 		}
 		$parameters = array_replace($this->vars, $parameters);
-		$engine = $this->container->query('Engine');
+		if($this->has('Engine')){
+			$engine = $this->get('Engine');
+		}else{
+			$engine = $this->get(TemplateInterface::class);
+		}
 		$engine->setApplication($this->appName);
 		$engine->setTemplate($name);
 		$response = new TemplateResponse($engine, array_replace($this->vars, $parameters));
@@ -134,19 +140,11 @@ abstract class AbstractController implements SimpleContainerTraitInterface{
 	}
 	
 	public function get($service){
-		if($this->has($service)){
-			return $this->container[$service];
-		}
-		
-		return null;
+		return $this->container->get($service);
 	}
 	
 	public function has($service){
-		if($this->container !== null){
-			return isset($this->container[$service]);
-		}
-		
-		return false;
+		return $this->container->has($service);
 	}
 	
 	/**
@@ -159,7 +157,7 @@ abstract class AbstractController implements SimpleContainerTraitInterface{
 	 * @return FormCreator
 	 */
 	protected function createForm($factory, $data=null, $options=array()){
-		return $this->get('Form')->create($factory, $data, $options);
+		return $this->get(FormCreator::class)->create($factory, $data, $options);
 	}
 	
 	/**
@@ -171,7 +169,7 @@ abstract class AbstractController implements SimpleContainerTraitInterface{
 	 * @return FormCreator
 	 */
 	protected function createFormBuilder($data = null, array $options = array()){
-		return $this->get('Form')->create(null, $data, $options);
+		return $this->get(FormCreator::class)->create(null, $data, $options);
 	}
 	
 	
@@ -203,7 +201,7 @@ abstract class AbstractController implements SimpleContainerTraitInterface{
 	
 	public function setTemplateDirs($resource){
 		if($this->container !== null){
-			$locator = $this->container['locator'];
+			$locator = $this->get('locator');
 			$this->templateDirs = $locator->findResources($resource);
 		}else{
 			$this->templateDirs = array();
