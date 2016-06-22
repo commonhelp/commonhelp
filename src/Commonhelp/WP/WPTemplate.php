@@ -71,7 +71,10 @@ class WPTemplate extends TemplateBase{
 	}
 	
 	public function issetTemplate($template){
-	try{
+		if(empty($template) || $template === null){
+			return false;
+		}
+		try{
 			$locator = new TemplateFileLocator($this->templateDirs);
 			$template = $locator->find($template);
 			
