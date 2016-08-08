@@ -16,6 +16,6 @@
     ],
     "minimum-stability": "dev",
     "autoload": {
-        "psr-4": { "Commonhelp\\DI": "" }
+        "psr-4": { "Commonhelp\\DI\\": "" }
     },
 }
