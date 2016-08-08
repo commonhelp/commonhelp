@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "php": ">=5.3.2",
-        "commonhelp/resource": ""
+        "commonhelp/resource": "dev-0.5.x"
     },
     "license": "MIT",
     "authors": [
@@ -15,6 +15,13 @@
             "role": "Developer"
         }
     ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/marcoski/commonhelp-resource"
+        }
+    ],
+    
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": { "Commonhelp\\Ssh": "" }
