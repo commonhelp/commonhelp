@@ -16,6 +16,6 @@
     ],
     "minimum-stability": "dev",
     "autoload": {
-        "psr-4": { "Commonhelp\\Event": "" }
+        "psr-4": { "Commonhelp\\Event\\": "" }
     },
 }
