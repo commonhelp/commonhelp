@@ -2,9 +2,15 @@
     "name": "commonhelp/config",
     "description": "Configuration library",
     "type": "library",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/marcoski/commonhelp-util"
+        }
+    ],
     "require": {
         "php": ">=5.4",
-        "commonhelp/util": ""
+        "commonhelp/util": "dev-master"
     },
     "license": "MIT",
     "authors": [
@@ -17,6 +23,6 @@
     ],
     "minimum-stability": "dev",
     "autoload": {
-        "psr-4": { "Commonhelp\\Config": "" }
+        "psr-4": { "Commonhelp\\Config\\": "" }
     },
 }
